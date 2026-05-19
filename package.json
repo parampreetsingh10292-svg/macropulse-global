@@ -1,0 +1,12 @@
+{
+  "name": "macropulse-global",
+  "version": "3.1.0",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "cd server && node src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

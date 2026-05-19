@@ -1,0 +1,130 @@
+// ─────────────────────────────────────────────────────────────
+// Live stock-index quotes for all 10 markets.
+// Provider chain: Twelve Data → FMP → bundled reference snapshot.
+// Every result is stamped with its source so the UI shows provenance.
+// ─────────────────────────────────────────────────────────────
+
+import { COUNTRIES } from "../constants.js";
+import { httpJSON, stamp } from "../http.js";
+
+const TD_KEY = process.env.TWELVE_DATA_KEY || "";
+const FMP_KEY = process.env.FMP_KEY || "";
+
+// Validated reference snapshot (approx Apr 2026 close) — last-resort fallback
+// so the UI is never empty. Clearly labelled "reference" in the response.
+const REFERENCE = {
+  usa:     { price: 5780,  changePct: 0.42 },
+  arg:     { price: 2_650_000, changePct: 1.15 },
+  taiwan:  { price: 21850, changePct: -0.31 },
+  india:   { price: 24980, changePct: 0.18 },
+  vietnam: { price: 1290,  changePct: 0.55 },
+  denmark: { price: 2640,  changePct: 0.22 },
+  brazil:  { price: 131500,changePct: 0.74 },
+  neth:    { price: 915,   changePct: 0.12 },
+  sweden:  { price: 2580,  changePct: -0.08 },
+  greece:  { price: 1620,  changePct: 0.61 },
+};
+
+async function fromTwelveData(country) {
+  if (!TD_KEY) return null;
+  const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(
+    country.indexSymbol
+  )}&apikey=${TD_KEY}`;
+  const j = await httpJSON(url);
+  if (j.status === "error" || !j.close) return null;
+  return {
+    price: Number(j.close),
+    changePct: Number(j.percent_change),
+    change: Number(j.change),
+    high: Number(j.high),
+    low: Number(j.low),
+    prevClose: Number(j.previous_close),
+    isOpen: j.is_market_open ?? null,
+    provider: "Twelve Data",
+  };
+}
+
+async function fromFMP(country) {
+  if (!FMP_KEY) return null;
+  const url = `https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(
+    country.indexSymbolFMP
+  )}?apikey=${FMP_KEY}`;
+  const arr = await httpJSON(url);
+  const q = Array.isArray(arr) ? arr[0] : null;
+  if (!q || q.price == null) return null;
+  return {
+    price: Number(q.price),
+    changePct: Number(q.changesPercentage),
+    change: Number(q.change),
+    high: Number(q.dayHigh),
+    low: Number(q.dayLow),
+    prevClose: Number(q.previousClose),
+    isOpen: null,
+    provider: "Financial Modeling Prep",
+  };
+}
+
+function fromReference(country) {
+  const r = REFERENCE[country.id];
+  return {
+    price: r.price,
+    changePct: r.changePct,
+    change: +(r.price * (r.changePct / 100)).toFixed(2),
+    high: null,
+    low: null,
+    prevClose: +(r.price / (1 + r.changePct / 100)).toFixed(2),
+    isOpen: null,
+    provider: "Reference snapshot (no live key configured)",
+  };
+}
+
+export async function fetchAllIndices() {
+  const results = await Promise.all(
+    COUNTRIES.map(async (country) => {
+      let q = null;
+      try {
+        q = (await fromTwelveData(country)) || (await fromFMP(country));
+      } catch (e) {
+        console.warn(`[indices] ${country.id} live fetch failed:`, e.message);
+      }
+      if (!q) q = fromReference(country);
+      return {
+        id: country.id,
+        name: country.name,
+        flag: country.flag,
+        indexName: country.indexName,
+        currency: country.currency,
+        color: country.color,
+        ...q,
+      };
+    })
+  );
+  const anyLive = results.some(
+    (r) => !r.provider.startsWith("Reference")
+  );
+  return stamp(
+    results,
+    anyLive ? "Twelve Data / FMP (live)" : "Bundled reference snapshot",
+    new Date().toISOString(),
+    { live: anyLive }
+  );
+}
+
+// Intraday time series for sparklines (Twelve Data only; optional)
+export async function fetchIndexSeries(countryId) {
+  const country = COUNTRIES.find((c) => c.id === countryId);
+  if (!country || !TD_KEY) {
+    return stamp([], "No live key — sparkline unavailable", new Date().toISOString());
+  }
+  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(
+    country.indexSymbol
+  )}&interval=15min&outputsize=26&apikey=${TD_KEY}`;
+  const j = await httpJSON(url);
+  if (j.status === "error" || !j.values) {
+    return stamp([], "Series unavailable", new Date().toISOString());
+  }
+  const series = j.values
+    .map((v) => ({ t: v.datetime, price: Number(v.close) }))
+    .reverse();
+  return stamp(series, "Twelve Data", new Date().toISOString());
+}
