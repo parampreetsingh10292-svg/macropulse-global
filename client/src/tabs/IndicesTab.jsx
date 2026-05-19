@@ -7,20 +7,19 @@ import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
 import { api, fmtNum, fmtPct } from "../lib/api.js";
 import { Card, Pulse, Source, Loading } from "../components/ui.jsx";
 
-function Spark({ id, color }) {
-  const [pts, setPts] = useState(null);
-  useEffect(() => {
-    let on = true;
-    api(`/indices/${id}/series`)
-      .then((r) => on && setPts(r.data || []))
-      .catch(() => on && setPts([]));
-    return () => { on = false; };
-  }, [id]);
-  if (!pts) return <div style={{ height: 40 }} />;
-  if (!pts.length)
+function Spark({ pts, color }) {
+  if (pts === undefined)
+    return (
+      <div style={{ height: 40, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "80%", height: 2, borderRadius: 1, background: "rgba(255,255,255,.06)", overflow: "hidden", position: "relative" }}>
+          <div style={{ position: "absolute", width: "30%", height: "100%", background: color || "#6366f1", opacity: 0.5, borderRadius: 1, animation: "mp-shimmer 1.5s ease-in-out infinite" }} />
+        </div>
+      </div>
+    );
+  if (!pts || !pts.length)
     return (
       <div style={{ height: 40, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'JetBrains Mono',monospace", fontSize: 7, color: "#2a3441" }}>
-        sparkline needs live key
+        sparkline unavailable
       </div>
     );
   return (
@@ -37,6 +36,7 @@ export default function IndicesTab() {
   const [data, setData] = useState(null);
   const [meta, setMeta] = useState({});
   const [err, setErr] = useState(null);
+  const [sparklines, setSparklines] = useState(null);
 
   async function load() {
     try {
@@ -51,7 +51,10 @@ export default function IndicesTab() {
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 60000); // refresh every 60s
+    api("/indices/sparklines")
+      .then((r) => setSparklines(r.data || {}))
+      .catch(() => setSparklines({}));
+    const t = setInterval(load, 60000);
     return () => clearInterval(t);
   }, []);
 
@@ -96,7 +99,7 @@ export default function IndicesTab() {
                   </div>
                 </div>
               </div>
-              <Spark id={q.id} color={c} />
+              <Spark pts={sparklines ? sparklines[q.id] : undefined} color={c} />
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, fontFamily: "'JetBrains Mono',monospace", fontSize: 8, color: "#4b5563" }}>
                 <span>Prev {fmtNum(q.prevClose, q.prevClose > 10000 ? 0 : 2)}</span>
                 {q.high != null && <span>H {fmtNum(q.high, 0)} · L {fmtNum(q.low, 0)}</span>}

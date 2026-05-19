@@ -79,6 +79,7 @@ export function GlobalStyles() {
       @keyframes mp-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
       @keyframes mp-spin{to{transform:rotate(360deg)}}
       @keyframes mp-grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+      @keyframes mp-shimmer{0%{left:-30%}100%{left:100%}}
       .mp-tab{transition:all .18s;cursor:pointer;border:none;background:none}
       .mp-tab:hover{color:#f9fafb !important}
       .mp-chip{transition:all .16s;cursor:pointer}

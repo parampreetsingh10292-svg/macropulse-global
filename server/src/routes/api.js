@@ -5,7 +5,7 @@
 
 import { Router } from "express";
 import { getOrSet, cacheStats } from "../cache.js";
-import { fetchAllIndices, fetchIndexSeries } from "../services/indices.js";
+import { fetchAllIndices, fetchIndexSeries, fetchAllSparklines } from "../services/indices.js";
 import { fetchFX } from "../services/fx.js";
 import { fetchCommodities } from "../services/commodities.js";
 import { fetchMacro } from "../services/macro.js";
@@ -27,6 +27,12 @@ r.get("/countries", (_req, res) => res.json({ data: COUNTRIES }));
 r.get("/indices", async (_req, res, next) => {
   try {
     res.json(await getOrSet("indices", T("CACHE_TTL_QUOTES", 60), fetchAllIndices));
+  } catch (e) { next(e); }
+});
+
+r.get("/indices/sparklines", async (_req, res, next) => {
+  try {
+    res.json(await getOrSet("sparklines", 900, fetchAllSparklines));
   } catch (e) { next(e); }
 });
 

@@ -110,6 +110,47 @@ export async function fetchAllIndices() {
   );
 }
 
+// Batch-fetch all 10 sparklines in one call; cached server-side.
+// Yahoo Finance (free, no key) primary → Twelve Data fallback.
+const YAHOO_SYMBOLS = { greece: "GD.AT" };
+
+export async function fetchAllSparklines() {
+  const sparklines = {};
+  for (const country of COUNTRIES) {
+    let series = [];
+    const yahooSym = YAHOO_SYMBOLS[country.id] || country.indexSymbolFMP;
+    try {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
+        yahooSym
+      )}?interval=15m&range=1d`;
+      const j = await httpJSON(url, { headers: { "User-Agent": "MacroPulse/3.1" } });
+      const result = j?.chart?.result?.[0];
+      if (result?.timestamp && result?.indicators?.quote?.[0]?.close) {
+        const ts = result.timestamp;
+        const closes = result.indicators.quote[0].close;
+        series = ts
+          .map((t, i) => ({ t: new Date(t * 1000).toISOString(), price: closes[i] != null ? +Number(closes[i]).toFixed(2) : null }))
+          .filter((p) => p.price != null);
+      }
+    } catch (_) {}
+    if (!series.length && TD_KEY) {
+      try {
+        const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(
+          country.indexSymbol
+        )}&interval=15min&outputsize=26&apikey=${TD_KEY}`;
+        const j = await httpJSON(url);
+        if (j.status !== "error" && j.values) {
+          series = j.values
+            .map((v) => ({ t: v.datetime, price: Number(v.close) }))
+            .reverse();
+        }
+      } catch (_) {}
+    }
+    sparklines[country.id] = series;
+  }
+  return stamp(sparklines, "Yahoo Finance", new Date().toISOString());
+}
+
 // Intraday time series for sparklines (Twelve Data only; optional)
 export async function fetchIndexSeries(countryId) {
   const country = COUNTRIES.find((c) => c.id === countryId);
