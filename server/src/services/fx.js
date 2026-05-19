@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// FX rates. Primary: exchangerate.host (free, no key, ECB-sourced).
+// FX rates. Primary: Yahoo Finance (live intraday) → open.er-api.com (ECB daily).
 // Returns each country currency vs USD and vs INR, plus DXY proxy.
 // ─────────────────────────────────────────────────────────────
 
@@ -18,18 +18,57 @@ const DXY_BASKET = [
   { ccy: "CHF", w: 0.036 },
 ];
 
+// Yahoo Finance symbol for USD→ccy pair
+const yahooSym = (ccy) => ccy === "USD" ? null : `${ccy}=X`;
+
+async function yahooRate(ccy) {
+  const sym = yahooSym(ccy);
+  if (!sym) return 1;
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
+    sym
+  )}?interval=1d&range=1d`;
+  const j = await httpJSON(url, { headers: { "User-Agent": "MacroPulse/3.1" } });
+  const price = j?.chart?.result?.[0]?.meta?.regularMarketPrice;
+  return price != null ? Number(price) : null;
+}
+
+async function fetchYahooRates() {
+  const allCcys = [...new Set([...CURRENCIES, ...DXY_BASKET.map((b) => b.ccy)])];
+  const entries = await Promise.all(
+    allCcys.map(async (ccy) => {
+      try {
+        const rate = await yahooRate(ccy);
+        return [ccy, rate];
+      } catch (_) {
+        return [ccy, null];
+      }
+    })
+  );
+  const rates = Object.fromEntries(entries.filter(([, v]) => v != null));
+  return Object.keys(rates).length > 3 ? rates : null;
+}
+
+async function fetchECBRates() {
+  const j = await httpJSON("https://open.er-api.com/v6/latest/USD");
+  return (j.result === "success" && j.rates) ? j.rates : null;
+}
+
 export async function fetchFX() {
-  const url = `https://open.er-api.com/v6/latest/USD`;
-  const j = await httpJSON(url);
-  const rates = (j.result === "success" && j.rates) ? j.rates : {};
+  let rates = null;
+  let source = "";
+  try { rates = await fetchYahooRates(); source = "Yahoo Finance (live)"; } catch (_) {}
+  if (!rates) {
+    try { rates = await fetchECBRates(); source = "open.er-api.com (ECB reference rates)"; } catch (_) {}
+  }
+  if (!rates) rates = {};
+
   const usdInr = rates.INR || 83.5;
 
   const rows = CURRENCIES.map((ccy) => {
-    const perUsd = rates[ccy];
+    const perUsd = ccy === "USD" ? 1 : rates[ccy];
     return {
       currency: ccy,
       perUSD: perUsd ? +perUsd.toFixed(4) : null,
-      // value of 1 unit of this currency in INR
       inINR: perUsd ? +(usdInr / perUsd).toFixed(4) : null,
       countries: COUNTRIES.filter((c) => c.currency === ccy).map((c) => c.id),
     };
@@ -44,7 +83,32 @@ export async function fetchFX() {
 
   return stamp(
     { usdInr: +usdInr.toFixed(4), rows, dxyProxy: +dxy.toFixed(2) },
-    "open.er-api.com (ECB reference rates)",
-    j.time_last_update_utc ? new Date(j.time_last_update_utc).toISOString() : new Date().toISOString()
+    source || "reference",
+    new Date().toISOString()
   );
+}
+
+export async function fetchFxSparklines() {
+  const sparklines = {};
+  for (const ccy of CURRENCIES) {
+    let series = [];
+    const sym = yahooSym(ccy);
+    if (!sym) { sparklines[ccy] = []; continue; }
+    try {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
+        sym
+      )}?interval=15m&range=1d`;
+      const j = await httpJSON(url, { headers: { "User-Agent": "MacroPulse/3.1" } });
+      const result = j?.chart?.result?.[0];
+      if (result?.timestamp && result?.indicators?.quote?.[0]?.close) {
+        const ts = result.timestamp;
+        const closes = result.indicators.quote[0].close;
+        series = ts
+          .map((t, i) => ({ t: new Date(t * 1000).toISOString(), price: closes[i] != null ? +Number(closes[i]).toFixed(4) : null }))
+          .filter((p) => p.price != null);
+      }
+    } catch (_) {}
+    sparklines[ccy] = series;
+  }
+  return stamp(sparklines, "Yahoo Finance", new Date().toISOString());
 }

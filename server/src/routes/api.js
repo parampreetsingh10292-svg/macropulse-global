@@ -6,8 +6,8 @@
 import { Router } from "express";
 import { getOrSet, cacheStats } from "../cache.js";
 import { fetchAllIndices, fetchIndexSeries, fetchAllSparklines } from "../services/indices.js";
-import { fetchFX } from "../services/fx.js";
-import { fetchCommodities } from "../services/commodities.js";
+import { fetchFX, fetchFxSparklines } from "../services/fx.js";
+import { fetchCommodities, fetchCommoditySparklines } from "../services/commodities.js";
 import { fetchMacro } from "../services/macro.js";
 import { fetchPolicyRates, fetchCalendar } from "../services/rates.js";
 import { fetchNews, fetchSovereign } from "../services/news.js";
@@ -52,9 +52,21 @@ r.get("/fx", async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
+r.get("/fx/sparklines", async (_req, res, next) => {
+  try {
+    res.json(await getOrSet("fx-sparklines", 900, fetchFxSparklines));
+  } catch (e) { next(e); }
+});
+
 r.get("/commodities", async (_req, res, next) => {
   try {
     res.json(await getOrSet("commodities", T("CACHE_TTL_COMMODITIES", 300), fetchCommodities));
+  } catch (e) { next(e); }
+});
+
+r.get("/commodities/sparklines", async (_req, res, next) => {
+  try {
+    res.json(await getOrSet("comm-sparklines", 900, fetchCommoditySparklines));
   } catch (e) { next(e); }
 });
 
