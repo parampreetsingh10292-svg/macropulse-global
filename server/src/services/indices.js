@@ -10,6 +10,8 @@ import { httpJSON, stamp } from "../http.js";
 const TD_KEY = process.env.TWELVE_DATA_KEY || "";
 const FMP_KEY = process.env.FMP_KEY || "";
 
+const YAHOO_SYMBOLS = { greece: "GD.AT" };
+
 // Validated reference snapshot (approx Apr 2026 close) — last-resort fallback
 // so the UI is never empty. Clearly labelled "reference" in the response.
 const REFERENCE = {
@@ -24,6 +26,30 @@ const REFERENCE = {
   sweden:  { price: 2580,  changePct: -0.08 },
   greece:  { price: 1620,  changePct: 0.61 },
 };
+
+async function fromYahoo(country) {
+  const yahooSym = YAHOO_SYMBOLS[country.id] || country.indexSymbolFMP;
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
+    yahooSym
+  )}?interval=1d&range=1d`;
+  const j = await httpJSON(url, { headers: { "User-Agent": "MacroPulse/3.1" } });
+  const meta = j?.chart?.result?.[0]?.meta;
+  if (!meta || meta.regularMarketPrice == null) return null;
+  const price = Number(meta.regularMarketPrice);
+  const prevClose = Number(meta.chartPreviousClose || meta.previousClose);
+  const change = prevClose ? +(price - prevClose).toFixed(2) : 0;
+  const changePct = prevClose ? +((change / prevClose) * 100).toFixed(2) : 0;
+  return {
+    price,
+    changePct,
+    change,
+    high: meta.regularMarketDayHigh != null ? Number(meta.regularMarketDayHigh) : null,
+    low: meta.regularMarketDayLow != null ? Number(meta.regularMarketDayLow) : null,
+    prevClose,
+    isOpen: null,
+    provider: "Yahoo Finance",
+  };
+}
 
 async function fromTwelveData(country) {
   if (!TD_KEY) return null;
@@ -82,10 +108,9 @@ export async function fetchAllIndices() {
   const results = await Promise.all(
     COUNTRIES.map(async (country) => {
       let q = null;
-      try {
-        q = (await fromTwelveData(country)) || (await fromFMP(country));
-      } catch (e) {
-        console.warn(`[indices] ${country.id} live fetch failed:`, e.message);
+      for (const fn of [fromYahoo, fromTwelveData, fromFMP]) {
+        try { q = await fn(country); } catch (_) {}
+        if (q) break;
       }
       if (!q) q = fromReference(country);
       return {
@@ -104,7 +129,7 @@ export async function fetchAllIndices() {
   );
   return stamp(
     results,
-    anyLive ? "Twelve Data / FMP (live)" : "Bundled reference snapshot",
+    anyLive ? "Yahoo Finance / Twelve Data / FMP (live)" : "Bundled reference snapshot",
     new Date().toISOString(),
     { live: anyLive }
   );
@@ -112,7 +137,6 @@ export async function fetchAllIndices() {
 
 // Batch-fetch all 10 sparklines in one call; cached server-side.
 // Yahoo Finance (free, no key) primary → Twelve Data fallback.
-const YAHOO_SYMBOLS = { greece: "GD.AT" };
 
 export async function fetchAllSparklines() {
   const sparklines = {};
