@@ -1,17 +1,19 @@
 // ─────────────────────────────────────────────────────────────
 // Commodities: Brent crude, gold, copper, natural gas.
-// Provider chain: Yahoo Finance → Twelve Data → reference.
+// Provider chain: Yahoo Finance → FMP (stable) → Twelve Data → reference.
 // ─────────────────────────────────────────────────────────────
 
 import { httpJSON, stamp } from "../http.js";
+import { priceHistory } from "../priceHistory.js";
 
 const TD_KEY = process.env.TWELVE_DATA_KEY || "";
+const FMP_KEY = process.env.FMP_KEY || "";
 
 const COMMODITIES = [
-  { id: "brent",  label: "Brent Crude", unit: "USD/bbl",  symbol: "BRENT",   yahoo: "BZ=F",  ref: 78.4 },
-  { id: "gold",   label: "Gold",        unit: "USD/oz",   symbol: "XAU/USD", yahoo: "GC=F",  ref: 2685 },
-  { id: "copper", label: "Copper",      unit: "USD/lb",   symbol: "COPPER",  yahoo: "HG=F",  ref: 4.62 },
-  { id: "gas",    label: "Natural Gas", unit: "USD/MMBtu", symbol: "NG",     yahoo: "NG=F",  ref: 3.18 },
+  { id: "brent",  label: "Brent Crude", unit: "USD/bbl",  tdSym: "BRENT",   yahoo: "BZ=F",  fmp: "BZUSD",  ref: 78.4 },
+  { id: "gold",   label: "Gold",        unit: "USD/oz",   tdSym: "XAU/USD", yahoo: "GC=F",  fmp: "GCUSD",  ref: 2685 },
+  { id: "copper", label: "Copper",      unit: "USD/lb",   tdSym: "COPPER",  yahoo: "HG=F",  fmp: null,     ref: 4.62 },
+  { id: "gas",    label: "Natural Gas", unit: "USD/MMBtu", tdSym: "NG",     yahoo: "NG=F",  fmp: null,     ref: 3.18 },
 ];
 
 async function fromYahoo(sym) {
@@ -25,7 +27,18 @@ async function fromYahoo(sym) {
   const prev = Number(meta.chartPreviousClose || meta.previousClose);
   const change = prev ? +(price - prev).toFixed(4) : 0;
   const changePct = prev ? +((change / prev) * 100).toFixed(2) : 0;
-  return { price, changePct };
+  return { price, changePct, provider: "Yahoo Finance" };
+}
+
+async function fromFMP(sym) {
+  if (!FMP_KEY || !sym) return null;
+  const url = `https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(
+    sym
+  )}&apikey=${FMP_KEY}`;
+  const arr = await httpJSON(url);
+  const q = Array.isArray(arr) ? arr[0] : null;
+  if (!q || q.price == null) return null;
+  return { price: Number(q.price), changePct: Number(q.changePercentage), provider: "Financial Modeling Prep" };
 }
 
 async function fromTD(sym) {
@@ -34,31 +47,29 @@ async function fromTD(sym) {
     `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(sym)}&apikey=${TD_KEY}`
   );
   if (j.status === "error" || !j.close) return null;
-  return { price: Number(j.close), changePct: Number(j.percent_change) };
+  return { price: Number(j.close), changePct: Number(j.percent_change), provider: "Twelve Data" };
 }
 
 export async function fetchCommodities() {
-  const rows = await Promise.all(
-    COMMODITIES.map(async (c) => {
-      let live = null;
-      for (const fn of [() => fromYahoo(c.yahoo), () => fromTD(c.symbol)]) {
-        try { live = await fn(); } catch (_) {}
-        if (live) break;
-      }
-      return {
-        id: c.id,
-        label: c.label,
-        unit: c.unit,
-        price: live ? live.price : c.ref,
-        changePct: live ? live.changePct : 0,
-        live: !!live,
-      };
-    })
-  );
+  const rows = [];
+  for (const c of COMMODITIES) {
+    let live = null;
+    for (const fn of [() => fromYahoo(c.yahoo), () => fromFMP(c.fmp), () => fromTD(c.tdSym)]) {
+      try { live = await fn(); } catch (_) {}
+      if (live) break;
+    }
+    const price = live ? live.price : c.ref;
+    priceHistory.record(`comm:${c.id}`, price);
+    rows.push({
+      id: c.id, label: c.label, unit: c.unit,
+      price, changePct: live ? live.changePct : 0,
+      live: !!live,
+    });
+  }
   const anyLive = rows.some((r) => r.live);
   return stamp(
     rows,
-    anyLive ? "Yahoo Finance (live)" : "Validated reference levels",
+    anyLive ? "Live (FMP / Yahoo Finance)" : "Validated reference levels",
     new Date().toISOString(),
     { live: anyLive }
   );
@@ -68,6 +79,7 @@ export async function fetchCommoditySparklines() {
   const sparklines = {};
   for (const c of COMMODITIES) {
     let series = [];
+    // Try Yahoo Finance (works locally, fails from cloud)
     try {
       const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(
         c.yahoo
@@ -82,7 +94,9 @@ export async function fetchCommoditySparklines() {
           .filter((p) => p.price != null);
       }
     } catch (_) {}
+    // Fallback: synthetic from accumulated quotes
+    if (!series.length) series = priceHistory.get(`comm:${c.id}`);
     sparklines[c.id] = series;
   }
-  return stamp(sparklines, "Yahoo Finance", new Date().toISOString());
+  return stamp(sparklines, "Yahoo Finance / price history", new Date().toISOString());
 }
