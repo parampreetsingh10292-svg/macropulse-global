@@ -8,7 +8,6 @@ server/.env
 *.local
 
 # Build output
-client/dist/
 dist/
 
 # Logs
