@@ -3,8 +3,9 @@ import react from "@vitejs/plugin-react";
 
 // Dev server proxies /api → backend so the browser never hits
 // third-party APIs directly (no CORS, no exposed keys).
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  base: mode === "production" ? "/macropulse-global/" : "/",
   server: {
     port: 5174,
     proxy: {
@@ -15,4 +16,4 @@ export default defineConfig({
     },
   },
   build: { outDir: "dist", sourcemap: false },
-});
+}));

@@ -2,7 +2,9 @@
 // Frontend API client + shared formatting helpers.
 // ─────────────────────────────────────────────────────────────
 
-const BASE = "/api";
+const BASE = import.meta.env.PROD
+  ? "https://macropulse-global.onrender.com/api"
+  : "/api";
 
 export async function api(path) {
   const res = await fetch(`${BASE}${path}`);
