@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
 import { api, fmtNum, fmtPct } from "../lib/api.js";
 import { Card, Pulse, Source, Loading } from "../components/ui.jsx";
+import { Glossary, CountrySummary } from "../components/Glossary.jsx";
 
 function Spark({ pts, color }) {
   if (pts === undefined)
@@ -32,7 +33,21 @@ function Spark({ pts, color }) {
   );
 }
 
-export default function IndicesTab() {
+const GLOSSARY = [
+  { icon: "📊", term: "Stock Market Index", definition: "A number that tracks how a group of important stocks is performing overall. Think of it as a 'score' for the stock market — when it goes up, most stocks are doing well." },
+  { icon: "📈", term: "S&P 500", definition: "Tracks the 500 biggest companies in the USA (like Apple, Google, Amazon). It's the most watched stock market number in the world." },
+  { icon: "🇮🇳", term: "NIFTY 50", definition: "India's main stock index — tracks the 50 largest companies on India's National Stock Exchange (like Reliance, TCS, Infosys)." },
+  { icon: "💰", term: "Index Price", definition: "The current value of the index. A higher number generally means stocks have gone up over time. Each country's index has its own scale." },
+  { icon: "📉", term: "Change % (▲ / ▼)", definition: "How much the index moved today compared to yesterday's closing price. Green (▲) means it went up, Red (▼) means it went down. For example, +1.5% means stocks gained 1.5% today." },
+  { icon: "🔙", term: "Prev Close", definition: "The price when the market closed yesterday. Today's change is measured from this number." },
+  { icon: "⬆️", term: "High (H) / Low (L)", definition: "The highest and lowest price the index reached during today's trading session." },
+  { icon: "〰️", term: "Sparkline", definition: "The small line chart inside each card. It shows how the price moved throughout the day — you can see if it went up smoothly or had ups and downs." },
+  { icon: "🟢", term: "Live vs Ref", definition: "'Live' means data is being fetched in real-time from market sources. 'Ref' (reference) means the system is using recent stored data because the live source is temporarily unavailable." },
+  { icon: "🔄", term: "Auto-Refresh 60s", definition: "The prices update automatically every 60 seconds without you needing to reload the page." },
+  { icon: "💱", term: "Currency (USD, INR, BRL...)", definition: "The currency in which the index price is shown. Each country's index is priced in its local currency." },
+];
+
+export default function IndicesTab({ countries, active }) {
   const [data, setData] = useState(null);
   const [meta, setMeta] = useState({});
   const [err, setErr] = useState(null);
@@ -113,6 +128,29 @@ export default function IndicesTab() {
       </div>
 
       <Source src={meta.source} asOf={meta.asOf} />
+
+      {/* Country summary */}
+      {(() => {
+        const cObj = countries?.find((c) => c.id === active);
+        const q = data?.find((d) => d.id === active);
+        if (!cObj || !q) return null;
+        const up = q.changePct >= 0;
+        return (
+          <CountrySummary country={cObj}>
+            {cObj.name}'s stock market index ({q.indexName}) is currently at <strong>{q.price?.toLocaleString()}</strong> {q.currency}.{" "}
+            {up
+              ? `It is up ${Math.abs(q.changePct).toFixed(2)}% from yesterday's close of ${q.prevClose?.toLocaleString()}, meaning investors are generally optimistic today.`
+              : `It is down ${Math.abs(q.changePct).toFixed(2)}% from yesterday's close of ${q.prevClose?.toLocaleString()}, meaning investors are cautious today.`}
+            {q.high != null && q.low != null && (
+              <> Today's trading range was between {q.low?.toLocaleString()} (lowest) and {q.high?.toLocaleString()} (highest).</>
+            )}
+            {" "}The data is sourced from <strong>{q.provider}</strong>.
+            {!q.provider?.startsWith("Reference") ? " This is live, real-time data." : " This is stored reference data — live data was temporarily unavailable."}
+          </CountrySummary>
+        );
+      })()}
+
+      <Glossary title="New to stock markets? Here's what everything means" terms={GLOSSARY} />
     </div>
   );
 }

@@ -21,7 +21,7 @@ const TABS = [
   { id: "fx", label: "💱 Markets & FX" },
   { id: "rates", label: "🏦 Rates & Calendar" },
   { id: "news", label: "📰 News & Risk" },
-  { id: "stocks", label: "🏆 Top Stocks" },
+  { id: "stocks", label: "🫧 GDP & Report" },
 ];
 
 export default function App() {
@@ -147,12 +147,12 @@ export default function App() {
         </div>
 
         {/* TAB BODY */}
-        {tab === "indices" && <IndicesTab />}
+        {tab === "indices" && <IndicesTab countries={countries} active={active} />}
         {tab === "chart" && <ChartTab countries={countries} active={active} setActive={setActive} />}
         {tab === "macro" && <MacroTab countries={countries} active={active} setActive={setActive} />}
-        {tab === "fx" && <FxTab countries={countries} />}
-        {tab === "rates" && <RatesTab countries={countries} />}
-        {tab === "news" && <NewsTab countries={countries} />}
+        {tab === "fx" && <FxTab countries={countries} active={active} />}
+        {tab === "rates" && <RatesTab countries={countries} active={active} />}
+        {tab === "news" && <NewsTab countries={countries} active={active} />}
         {tab === "stocks" && <StocksTab countries={countries} active={active} setActive={setActive} />}
 
         {/* FOOTER */}

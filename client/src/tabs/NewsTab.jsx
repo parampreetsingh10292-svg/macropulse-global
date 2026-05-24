@@ -5,8 +5,21 @@
 import { useEffect, useState } from "react";
 import { api, timeAgo } from "../lib/api.js";
 import { Card, Bar, Source, Loading } from "../components/ui.jsx";
+import { Glossary, CountrySummary } from "../components/Glossary.jsx";
 
-export default function NewsTab({ countries }) {
+const GLOSSARY = [
+  { icon: "📊", term: "Sovereign Credit Rating", definition: "A grade given to a country by rating agencies, showing how likely the country is to repay its debts. Higher ratings (like AAA) mean very safe; lower ratings (like B) mean higher risk. Think of it as a country's 'credit score.'" },
+  { icon: "🏛️", term: "S&P / Moody's / Fitch", definition: "The three most important credit rating agencies in the world. They independently evaluate every country's financial health and assign letter grades. Their opinions heavily influence how cheaply a country can borrow money." },
+  { icon: "🅰️", term: "AAA (Triple A)", definition: "The highest possible credit rating. Only a handful of very financially stable countries earn this (like Germany, Denmark, Netherlands). It means investors consider lending to this country almost risk-free." },
+  { icon: "📈", term: "Investment Grade (BBB- and above)", definition: "Ratings from BBB- up to AAA. Countries in this range are considered safe enough for large institutional investors (pension funds, insurance companies) to invest in." },
+  { icon: "⚠️", term: "Speculative/Junk Grade (below BBB-)", definition: "Ratings below BBB- (like BB, B, CCC). These countries are considered riskier — they might struggle to repay debts. They must offer higher interest rates to attract lenders." },
+  { icon: "📉", term: "Default Risk Score", definition: "A numerical score (0-100) representing how likely a country is to default (fail to repay debt). Higher score = safer. The bar chart visually shows this — longer green bars are better." },
+  { icon: "🔴🟢", term: "Rating Colors", definition: "Green = very safe (score 70+), Blue = safe (55-70), Yellow = moderate risk (40-55), Red = high risk (below 40). These help you quickly identify which countries are financially healthiest." },
+  { icon: "📰", term: "Headlines & Geopolitics", definition: "Latest news articles related to the economies and markets of these 10 countries. Geopolitical events (wars, trade disputes, elections) can significantly impact stock markets and currencies." },
+  { icon: "🏳️", term: "Country Filter", definition: "Click on a country's flag to see only news headlines related to that country. Click 'ALL' to see all headlines." },
+];
+
+export default function NewsTab({ countries, active }) {
   const [news, setNews] = useState(null);
   const [sov, setSov] = useState(null);
   const [nMeta, setNMeta] = useState({});
@@ -83,6 +96,26 @@ export default function NewsTab({ countries }) {
         </Card>
       )}
       <Source src={nMeta.source} asOf={nMeta.asOf} />
+
+      {/* Country summary */}
+      {(() => {
+        const cObj = countries?.find((c) => c.id === active);
+        if (!cObj || !sov) return null;
+        const s = sov.find((sv) => sv.id === active);
+        if (!s) return null;
+        const gradeQuality = s.score >= 70 ? "very good — considered one of the safest countries to invest in" : s.score >= 55 ? "solid — considered safe for investment (investment grade)" : s.score >= 40 ? "moderate — some risk factors that investors should watch" : "lower — considered riskier, meaning the country pays higher interest to borrow";
+        const newsCount = (news || []).filter((n) => n.country === active).length;
+        return (
+          <CountrySummary country={cObj}>
+            <strong>Credit Rating:</strong> {cObj.name} is rated <strong>{s.sp}</strong> by S&P, <strong>{s.moodys}</strong> by Moody's, and <strong>{s.fitch}</strong> by Fitch. This gives it a risk score of <strong>{s.score}/100</strong>, classified as <strong>"{s.grade}"</strong>.{" "}
+            In simple terms, {cObj.name}'s credit standing is {gradeQuality}.{" "}
+            A good credit rating means the country can borrow money at lower interest rates, which helps fund infrastructure, healthcare, and other public services.{" "}
+            {newsCount > 0 ? `There are currently ${newsCount} recent news headlines related to ${cObj.name} in the feed.` : `No specific headlines for ${cObj.name} at the moment.`}
+          </CountrySummary>
+        );
+      })()}
+
+      <Glossary title="What do credit ratings & risk terms mean?" terms={GLOSSARY} />
     </div>
   );
 }

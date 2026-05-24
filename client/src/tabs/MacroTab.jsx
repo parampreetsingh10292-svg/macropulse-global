@@ -5,6 +5,22 @@
 import { useEffect, useState } from "react";
 import { api } from "../lib/api.js";
 import { Card, OutlookTag, Source, Loading } from "../components/ui.jsx";
+import { Glossary, CountrySummary } from "../components/Glossary.jsx";
+
+const GLOSSARY = [
+  { icon: "📈", term: "GDP Growth (%)", definition: "Gross Domestic Product growth — how fast the country's economy is expanding. Think of it as 'how much more stuff the country produced this year vs last year.' Higher is better — 2-3% is normal for rich countries, 5-7% for developing ones." },
+  { icon: "🔥", term: "Inflation (%)", definition: "How fast prices are rising. If inflation is 4%, something that cost $100 last year now costs $104. A little inflation (2%) is normal and healthy. Too much (above 5-6%) means your money loses value quickly." },
+  { icon: "🏦", term: "10Y Bond Yield (%)", definition: "The interest rate the government pays when it borrows money for 10 years. Higher yields mean higher borrowing costs. It also reflects how much investors trust the government to repay its debts." },
+  { icon: "👥", term: "Unemployment (%)", definition: "The percentage of people who want to work but cannot find a job. Lower is better. Below 4% is usually very good; above 8% signals economic trouble." },
+  { icon: "💸", term: "Fiscal Deficit (% of GDP)", definition: "How much more the government spends than it earns in a year, as a share of the total economy. Like a household spending more than its income — a small deficit is normal, but large ones can be risky." },
+  { icon: "⚖️", term: "Debt-to-GDP (%)", definition: "The total amount of money the government owes compared to the size of the economy. Below 60% is generally healthy, 60-100% is manageable, above 100% needs careful watching. Think of it like your total debt compared to your annual salary." },
+  { icon: "🟢", term: "Bullish (▲ On Track)", definition: "Positive outlook — the indicator is doing well and heading in the right direction. Like a green traffic light." },
+  { icon: "🟡", term: "Neutral (◆ Near Target)", definition: "The indicator is roughly on track but not exceptional. Like a yellow traffic light — worth watching." },
+  { icon: "🔴", term: "Bearish (▼ Off Track)", definition: "Negative outlook — the indicator is heading in the wrong direction or missing its target. Needs attention or improvement." },
+  { icon: "🎯", term: "Target", definition: "The ideal level that the government or central bank is aiming for. For example, most central banks target 2% inflation." },
+  { icon: "💯", term: "Macro Score (out of 100)", definition: "An overall health score combining all 6 indicators. Above 65 = strong economy, 45-65 = mixed signals, below 45 = concerning. Think of it as the country's economic 'report card.'" },
+  { icon: "📊", term: "vs Prev", definition: "Comparison with the previous period's value. Shows whether things are improving (+) or worsening (-)." },
+];
 
 const PARAMS = [
   { key: "gdp", label: "GDP Growth", unit: "%", icon: "📈" },
@@ -148,6 +164,28 @@ export default function MacroTab({ countries, active, setActive }) {
         </div>
       </Card>
       <Source src={meta.source} asOf={meta.asOf} />
+
+      {/* Country summary */}
+      {(() => {
+        if (!cObj || !m) return null;
+        const gdp = m.gdp, inf = m.inflation, unemp = m.unemployment, debt = m.debtToGdp, fisc = m.fiscalDeficit, bond = m.bonds;
+        const gdpStatus = gdp.current >= gdp.target ? "meeting its growth target" : "growing slightly below target";
+        const infStatus = inf.current <= inf.target * 1.2 ? "under control" : inf.current <= inf.target * 2 ? "elevated and worth watching" : "very high — everyday items are getting expensive fast";
+        const unempStatus = unemp.current <= unemp.target ? "in a healthy range" : "higher than ideal, meaning job creation needs to improve";
+        const debtStatus = debt.current <= 60 ? "low, giving the government room to spend" : debt.current <= 100 ? "moderate — needs careful management" : "high — the government owes a lot relative to the economy";
+        return (
+          <CountrySummary country={cObj}>
+            <strong>Economy:</strong> {cObj.name}'s economy is growing at {gdp.current}% — {gdpStatus} ({gdp.target}% target).{" "}
+            <strong>Prices:</strong> Inflation is at {inf.current}%, which is {infStatus}.{" "}
+            <strong>Jobs:</strong> Unemployment at {unemp.current}% is {unempStatus}.{" "}
+            <strong>Government finances:</strong> Fiscal deficit is {fisc.current}% of GDP and debt is {debt.current}% of GDP — {debtStatus}.{" "}
+            <strong>Borrowing costs:</strong> The 10-year bond yield is {bond.current}%.{" "}
+            <strong>Overall:</strong> The macro health score is <strong>{m.score}/100</strong> with a <strong>{m.overallOutlook}</strong> outlook. {m.summary}
+          </CountrySummary>
+        );
+      })()}
+
+      <Glossary title="What do these economic terms mean?" terms={GLOSSARY} />
     </div>
   );
 }

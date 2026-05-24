@@ -6,6 +6,20 @@ import { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import { api } from "../lib/api.js";
 import { Card, Source, Loading } from "../components/ui.jsx";
+import { Glossary, CountrySummary } from "../components/Glossary.jsx";
+
+const GLOSSARY = [
+  { icon: "📊", term: "Normalised Performance", definition: "All countries start at the same value (100) so you can fairly compare them, regardless of their actual index price. If a country shows 300, its market has tripled since the starting point." },
+  { icon: "💯", term: "Base 100 = Apr 2016", definition: "The starting point is April 2016, where every country was set to 100. Everything after that shows how much each market grew (or fell) relative to that starting point." },
+  { icon: "💵", term: "USD (US Dollars)", definition: "All performance is converted to US Dollars so you can compare fairly. Without this, a country with a weakening currency might look better than it really is." },
+  { icon: "📈", term: "10Y CAGR (Compound Annual Growth Rate)", definition: "The average yearly return over 10 years, accounting for compounding. Think of it as 'if the market grew steadily each year, what would that rate be?' For example, 14% CAGR means roughly doubling every 5 years." },
+  { icon: "💰", term: "10Y Total Return", definition: "The total percentage gain over the full 10-year period. For example, +270% means if you invested $100, it would now be worth $370." },
+  { icon: "🔮", term: "6-Month Forecast", definition: "A projected estimate of where the market might go in the next 6 months. This is NOT a guarantee — it's based on recent trends and momentum." },
+  { icon: "📐", term: "Confidence Band (Bear / Base / Bull)", definition: "Three scenarios: Bear (pessimistic — things go wrong), Base (most likely outcome), Bull (optimistic — things go well). The wider the band, the more uncertain the forecast." },
+  { icon: "📉", term: "Bear Scenario", definition: "The worst-case estimate. This is what might happen if the economy slows down, markets crash, or unexpected bad events occur." },
+  { icon: "📈", term: "Bull Scenario", definition: "The best-case estimate. This is what might happen if everything goes well — strong economy, good earnings, positive sentiment." },
+  { icon: "🎯", term: "Base Scenario", definition: "The most likely outcome, based on continuing current trends. Neither too optimistic nor too pessimistic." },
+];
 
 export default function ChartTab({ countries, active, setActive }) {
   const [perf, setPerf] = useState(null);
@@ -105,6 +119,24 @@ export default function ChartTab({ countries, active, setActive }) {
         </div>
       )}
       <Source src={meta.source} asOf={meta.asOf} />
+
+      {/* Country summary */}
+      {(() => {
+        const val = last?.[active];
+        const gain = val ? ((val - 100) / 100 * 100).toFixed(0) : null;
+        const fcLast = fc[fc.length - 1];
+        const fcChg = fcLast && val ? (((fcLast.v - val) / val) * 100).toFixed(1) : null;
+        if (!cObj || !val) return null;
+        return (
+          <CountrySummary country={cObj}>
+            If you had invested $100 in {cObj.name}'s stock market in April 2016, it would be worth approximately <strong>${val}</strong> today — a total gain of <strong>+{gain}%</strong> over ~10 years.{" "}
+            {perf?.meta?.[active] && <>This translates to an average annual return of <strong>{perf.meta[active].annualized}%</strong> per year (CAGR).</>}
+            {fcLast && <> Looking ahead, the base-case forecast for {fcLast.year} is <strong>{fcLast.v}</strong> ({fcChg > 0 ? "+" : ""}{fcChg}% from current), with a range from {fcLast.lo} (pessimistic) to {fcLast.hi} (optimistic).</>}
+          </CountrySummary>
+        );
+      })()}
+
+      <Glossary title="New to investing? Here's what the chart terms mean" terms={GLOSSARY} />
     </div>
   );
 }

@@ -6,6 +6,21 @@ import { useEffect, useState } from "react";
 import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
 import { api, fmtNum, fmtPct } from "../lib/api.js";
 import { Card, Source, Loading } from "../components/ui.jsx";
+import { Glossary, CountrySummary } from "../components/Glossary.jsx";
+
+const FX_GLOSSARY = [
+  { icon: "💱", term: "FX (Foreign Exchange)", definition: "The market where currencies are bought and sold. When you exchange Rupees for Dollars at a bank, you're participating in FX. It's the largest financial market in the world." },
+  { icon: "🇺🇸", term: "USD (US Dollar)", definition: "The world's most widely used currency. Most international trade, oil, and gold are priced in USD, making it the global benchmark." },
+  { icon: "💹", term: "Per USD", definition: "How many units of a currency you need to buy 1 US Dollar. For example, if INR per USD is 96.82, you need about 97 Rupees to buy 1 Dollar." },
+  { icon: "🇮🇳", term: "1 Unit in ₹ (INR value)", definition: "How many Indian Rupees one unit of that currency is worth. Useful for Indian investors to understand the cost of foreign currencies." },
+  { icon: "📊", term: "DXY (Dollar Index Proxy)", definition: "Measures the US Dollar's strength against 6 major world currencies. Above 100 = Dollar is strong, Below 100 = Dollar is weak. A strong dollar makes imports cheaper for Americans but hurts exporters." },
+  { icon: "🛢️", term: "Brent Crude (USD/bbl)", definition: "The global benchmark price for oil, measured in Dollars per barrel (159 liters). Oil prices affect petrol, transport, food prices, and inflation. Oil-importing countries like India suffer when prices rise." },
+  { icon: "🥇", term: "Gold (USD/oz)", definition: "Price of gold per troy ounce (~31 grams). Gold is a 'safe haven' — investors buy it when worried about the economy. Rising gold = more uncertainty." },
+  { icon: "🔶", term: "Copper (USD/lb)", definition: "Price of copper per pound. Used in construction, electronics, and EVs. Rising copper often signals economic growth — it's called 'Dr. Copper' because it 'diagnoses' the economy." },
+  { icon: "🔥", term: "Natural Gas (USD/MMBtu)", definition: "Price per million British Thermal Units. Used for heating, electricity, and cooking. Prices spike in cold winters or supply disruptions." },
+  { icon: "〰️", term: "Sparkline", definition: "The small line chart showing how the price moved throughout the day. Upward slope = price rising; downward = falling." },
+  { icon: "▲▼", term: "Change %", definition: "How much a commodity price changed today. Green ▲ = price went up, Red ▼ = price went down. For example, -5% on oil means it fell significantly today." },
+];
 
 function Spark({ pts, color, height = 32 }) {
   if (pts === undefined)
@@ -27,7 +42,7 @@ function Spark({ pts, color, height = 32 }) {
   );
 }
 
-export default function FxTab({ countries }) {
+export default function FxTab({ countries, active }) {
   const [fx, setFx] = useState(null);
   const [comm, setComm] = useState(null);
   const [fxMeta, setFxMeta] = useState({});
@@ -116,6 +131,32 @@ export default function FxTab({ countries }) {
         })}
       </div>
       <Source src={cMeta.source} asOf={cMeta.asOf} />
+
+      {/* Country summary */}
+      {(() => {
+        const cObj = countries?.find((c) => c.id === active);
+        if (!cObj) return null;
+        const ccyRow = fx.rows.find((r) => r.currency === cObj.currency);
+        const brent = comm.find((c) => c.id === "brent");
+        const gold = comm.find((c) => c.id === "gold");
+        return (
+          <CountrySummary country={cObj}>
+            <strong>Currency:</strong> {cObj.name} uses the <strong>{cObj.currency}</strong>.{" "}
+            {ccyRow?.perUSD && <>One US Dollar currently buys {ccyRow.perUSD.toLocaleString()} {cObj.currency}.{" "}</>}
+            {ccyRow?.inINR && <>One {cObj.currency} is worth ₹{ccyRow.inINR} in Indian Rupees.{" "}</>}
+            {cObj.currency !== "USD" && (
+              <>A stronger {cObj.currency} (lower per-USD number) makes imports cheaper for {cObj.name}, while a weaker one helps exporters.{" "}</>
+            )}
+            <strong>Key commodities:</strong> Brent crude oil is at ${brent?.price?.toFixed(2)}/barrel ({brent?.changePct >= 0 ? "up" : "down"} {Math.abs(brent?.changePct || 0).toFixed(1)}% today).{" "}
+            Gold is at ${gold?.price?.toLocaleString()}/oz.{" "}
+            {cObj.id === "india" && "India imports ~85% of its oil, so high oil prices directly increase India's trade deficit and inflation."}
+            {cObj.id === "usa" && "The US is a major oil producer, so higher oil prices benefit its energy sector but increase consumer costs."}
+            {cObj.id === "brazil" && "Brazil is a major commodity exporter — high commodity prices generally benefit its economy."}
+          </CountrySummary>
+        );
+      })()}
+
+      <Glossary title="New to currencies & commodities? Here's what it all means" terms={FX_GLOSSARY} />
     </div>
   );
 }
