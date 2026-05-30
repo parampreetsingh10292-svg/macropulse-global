@@ -7,7 +7,7 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 
 // ─── Constants ───────────────────────────────────────────────
 
-const FLOW_COUNTRIES = [
+export const FLOW_COUNTRIES = [
   { id: "usa",    name: "USA",         iso: "US", flag: "\u{1F1FA}\u{1F1F8}", color: "#3b82f6", idx: "S&P 500" },
   { id: "india",  name: "India",       iso: "IN", flag: "\u{1F1EE}\u{1F1F3}", color: "#f97316", idx: "NIFTY 50" },
   { id: "taiwan", name: "Taiwan",      iso: "TW", flag: "\u{1F1F9}\u{1F1FC}", color: "#10b981", idx: "TAIEX" },
@@ -20,7 +20,7 @@ const FLOW_COUNTRIES = [
   { id: "arg",    name: "Argentina",   iso: "AR", flag: "\u{1F1E6}\u{1F1F7}", color: "#f59e0b", idx: "S&P MERVAL" },
 ];
 
-const SECTORS = [
+export const SECTORS = [
   { id: "tech",       name: "Technology",  short: "Tech",   icon: "\u{1F4BB}", color: "#3b82f6" },
   { id: "finance",    name: "Financials",  short: "Fin",    icon: "\u{1F3E6}", color: "#8b5cf6" },
   { id: "industrial", name: "Industrials", short: "Indu",   icon: "\u{1F3D7}️", color: "#6366f1" },
@@ -32,8 +32,8 @@ const SECTORS = [
 ];
 
 const C_SCALE = { usa: 10, india: 7, brazil: 5, taiwan: 4.2, neth: 3.4, sweden: 3, denmark: 2.6, vietnam: 3.4, greece: 2, arg: 2.4 };
-const C_BIAS  = { usa: 55, india: 88, taiwan: 62, vietnam: 52, neth: 18, denmark: 10, sweden: 6, brazil: -14, greece: -42, arg: -58 };
-const S_BIAS  = { tech: 82, finance: 38, industrial: 30, health: 22, consumer: 14, energy: -12, materials: -6, realestate: -28 };
+export const C_BIAS  = { usa: 55, india: 88, taiwan: 62, vietnam: 52, neth: 18, denmark: 10, sweden: 6, brazil: -14, greece: -42, arg: -58 };
+export const S_BIAS  = { tech: 82, finance: 38, industrial: 30, health: 22, consumer: 14, energy: -12, materials: -6, realestate: -28 };
 const T_WEIGHT = { fii: 0.34, dii: 0.50, ri: 0.16 };
 const T_TILT   = { fii: 1.25, dii: 0.85, ri: 0.55 };
 
