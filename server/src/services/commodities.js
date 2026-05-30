@@ -9,11 +9,12 @@ import { priceHistory } from "../priceHistory.js";
 const TD_KEY = process.env.TWELVE_DATA_KEY || "";
 const FMP_KEY = process.env.FMP_KEY || "";
 
+// Updated: 30 May 2026 from Yahoo Finance / TradingEconomics
 const COMMODITIES = [
-  { id: "brent",  label: "Brent Crude", unit: "USD/bbl",  tdSym: "BRENT",   yahoo: "BZ=F",  fmp: "BZUSD",  ref: 78.4 },
-  { id: "gold",   label: "Gold",        unit: "USD/oz",   tdSym: "XAU/USD", yahoo: "GC=F",  fmp: "GCUSD",  ref: 2685 },
-  { id: "copper", label: "Copper",      unit: "USD/lb",   tdSym: "COPPER",  yahoo: "HG=F",  fmp: null,     ref: 4.62 },
-  { id: "gas",    label: "Natural Gas", unit: "USD/MMBtu", tdSym: "NG",     yahoo: "NG=F",  fmp: null,     ref: 3.18 },
+  { id: "brent",  label: "Brent Crude", unit: "USD/bbl",  tdSym: "BRENT",   yahoo: "BZ=F",  fmp: "BZUSD",  ref: 91.12 },
+  { id: "gold",   label: "Gold",        unit: "USD/oz",   tdSym: "XAU/USD", yahoo: "GC=F",  fmp: "GCUSD",  ref: 4593 },
+  { id: "copper", label: "Copper",      unit: "USD/lb",   tdSym: "COPPER",  yahoo: "HG=F",  fmp: null,     ref: 6.39 },
+  { id: "gas",    label: "Natural Gas", unit: "USD/MMBtu", tdSym: "NG",     yahoo: "NG=F",  fmp: null,     ref: 3.28 },
 ];
 
 async function fromYahoo(sym) {

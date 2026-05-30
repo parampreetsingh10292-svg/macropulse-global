@@ -13,14 +13,14 @@ const FMP_KEY = process.env.FMP_KEY || "";
 // Validated as of Apr 2026 from central-bank communications.
 const POLICY_RATES = {
   usa:     { bank:"Federal Reserve",        rate:4.50,  prev:4.50,  bias:"hold",      next:"2026-06-17" },
-  arg:     { bank:"BCRA",                   rate:32.00, prev:35.00, bias:"cutting",   next:"2026-05-29" },
+  arg:     { bank:"BCRA",                   rate:32.00, prev:35.00, bias:"cutting",   next:"2026-06-26" },
   taiwan:  { bank:"CBC Taiwan",             rate:2.00,  prev:2.00,  bias:"hold",      next:"2026-06-18" },
   india:   { bank:"Reserve Bank of India",  rate:6.00,  prev:6.25,  bias:"cutting",   next:"2026-06-05" },
   vietnam: { bank:"State Bank of Vietnam",  rate:4.50,  prev:4.50,  bias:"hold",      next:"2026-06-15" },
   denmark: { bank:"Danmarks Nationalbank",  rate:2.35,  prev:2.60,  bias:"cutting",   next:"2026-06-05" },
-  brazil:  { bank:"Banco Central do Brasil",rate:13.25, prev:12.25, bias:"hiking",    next:"2026-05-07" },
+  brazil:  { bank:"Banco Central do Brasil",rate:14.75, prev:13.25, bias:"hiking",    next:"2026-06-18" },
   neth:    { bank:"ECB",                    rate:2.40,  prev:2.65,  bias:"cutting",   next:"2026-06-04" },
-  sweden:  { bank:"Riksbank",               rate:2.25,  prev:2.50,  bias:"cutting",   next:"2026-05-20" },
+  sweden:  { bank:"Riksbank",               rate:2.25,  prev:2.50,  bias:"cutting",   next:"2026-06-24" },
   greece:  { bank:"ECB",                    rate:2.40,  prev:2.65,  bias:"cutting",   next:"2026-06-04" },
 };
 

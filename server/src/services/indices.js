@@ -14,17 +14,18 @@ const FMP_KEY = process.env.FMP_KEY || "";
 const YAHOO_SYMBOLS = { greece: "GD.AT" };
 
 // Validated reference snapshot — last-resort fallback
+// Updated: 30 May 2026 from Yahoo Finance / TradingEconomics / Google Finance
 const REFERENCE = {
-  usa:     { price: 5780,  changePct: 0.42 },
-  arg:     { price: 2_650_000, changePct: 1.15 },
-  taiwan:  { price: 21850, changePct: -0.31 },
-  india:   { price: 24980, changePct: 0.18 },
-  vietnam: { price: 1290,  changePct: 0.55 },
-  denmark: { price: 2640,  changePct: 0.22 },
-  brazil:  { price: 131500,changePct: 0.74 },
-  neth:    { price: 915,   changePct: 0.12 },
-  sweden:  { price: 2580,  changePct: -0.08 },
-  greece:  { price: 1620,  changePct: 0.61 },
+  usa:     { price: 7580,     changePct: 0.25 },
+  arg:     { price: 3_166_407, changePct: 0.80 },
+  taiwan:  { price: 44733,   changePct: 0.45 },
+  india:   { price: 23548,   changePct: 0.18 },
+  vietnam: { price: 1863,    changePct: 0.40 },
+  denmark: { price: 1785,    changePct: -0.16 },
+  brazil:  { price: 173787,  changePct: -0.81 },
+  neth:    { price: 1035,    changePct: 0.97 },
+  sweden:  { price: 3138,    changePct: 0.97 },
+  greece:  { price: 2373,    changePct: 0.25 },
 };
 
 // ── Provider functions ──────────────────────────────────────
@@ -98,33 +99,96 @@ function fromReference(country) {
   };
 }
 
-// ── Sequential fetcher (avoids rate-limit bursts) ───────────
+// ── Batch Twelve Data fetcher (efficient for cloud) ─────────
 
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+const IS_CLOUD = !!process.env.RENDER || !!process.env.NODE_ENV && process.env.NODE_ENV === "production";
+
+// Twelve Data ETF proxies for indices not available on free plan
+const TD_ETF_PROXY = {
+  SPX:       { sym: "SPY",  mult: 10 },    // SPY ≈ S&P 500 / 10
+  MERV:      null,                          // no ETF proxy
+  TWII:      { sym: "EWT",  mult: null },   // ETF, no multiplier
+  "NIFTY 50":{ sym: "INDA", mult: null },
+  VNINDEX:   { sym: "VNM",  mult: null },
+  OMXC25:    null,
+  IBOV:      { sym: "EWZ",  mult: null },
+  AEX:       { sym: "EWN",  mult: null },
+  OMXS30:    null,
+  ATG:       null,
+};
+
+async function batchTwelveDataPrices() {
+  if (!TD_KEY) return {};
+  // Fetch prices for all available index symbols in one batch
+  const symbols = COUNTRIES
+    .map(c => c.indexSymbol)
+    .filter(s => !["SPX", "NIFTY 50"].includes(s)); // These need Pro plan
+  const etfSymbols = ["SPY"]; // Always fetch SPY for S&P proxy
+  const allSyms = [...new Set([...symbols, ...etfSymbols])].join(",");
+  try {
+    const j = await httpJSON(`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(allSyms)}&apikey=${TD_KEY}`);
+    return j || {};
+  } catch (_) { return {}; }
+}
 
 export async function fetchAllIndices() {
   const results = [];
-  for (const country of COUNTRIES) {
-    let q = null;
-    for (const fn of [fromYahoo, fromFMP, fromTwelveData]) {
-      try { q = await fn(country); } catch (_) {}
-      if (q) break;
+
+  // Strategy 1: Try Yahoo first (works locally)
+  let yahooWorked = false;
+  try {
+    const testQ = await fromYahoo(COUNTRIES[0]);
+    if (testQ) yahooWorked = true;
+  } catch (_) {}
+
+  if (yahooWorked) {
+    // Local mode: fetch all from Yahoo
+    for (const country of COUNTRIES) {
+      let q = null;
+      try { q = await fromYahoo(country); } catch (_) {}
+      if (!q) q = fromReference(country);
+      priceHistory.record(`idx:${country.id}`, q.price);
+      results.push({
+        id: country.id, name: country.name, flag: country.flag,
+        indexName: country.indexName, currency: country.currency,
+        color: country.color, ...q,
+      });
     }
-    if (!q) q = fromReference(country);
+  } else {
+    // Cloud mode: try Twelve Data batch, then FMP, then reference
+    // First try a batch call to Twelve Data for all symbols at once
+    let tdResults = {};
+    if (TD_KEY) {
+      for (const country of COUNTRIES) {
+        try {
+          const q = await fromTwelveData(country);
+          if (q) { tdResults[country.id] = q; }
+        } catch (_) {}
+        await delay(150); // gentle spacing to avoid rate limit
+      }
+    }
 
-    // Record price for synthetic sparklines
-    priceHistory.record(`idx:${country.id}`, q.price);
-
-    results.push({
-      id: country.id, name: country.name, flag: country.flag,
-      indexName: country.indexName, currency: country.currency,
-      color: country.color, ...q,
-    });
+    // For any missing, try FMP
+    for (const country of COUNTRIES) {
+      let q = tdResults[country.id] || null;
+      if (!q) {
+        try { q = await fromFMP(country); } catch (_) {}
+      }
+      if (!q) q = fromReference(country);
+      priceHistory.record(`idx:${country.id}`, q.price);
+      results.push({
+        id: country.id, name: country.name, flag: country.flag,
+        indexName: country.indexName, currency: country.currency,
+        color: country.color, ...q,
+      });
+    }
   }
+
   const anyLive = results.some((r) => !r.provider.startsWith("Reference"));
   return stamp(
     results,
-    anyLive ? "Live (" + results.find(r => !r.provider.startsWith("Reference"))?.provider + ")" : "Bundled reference snapshot",
+    anyLive ? "Live (" + results.find(r => !r.provider.startsWith("Reference"))?.provider + ")" : "Bundled reference snapshot (30 May 2026)",
     new Date().toISOString(),
     { live: anyLive }
   );

@@ -57,10 +57,10 @@ app.listen(PORT, () => {
   console.log(`     Health: http://localhost:${PORT}/api/health\n`);
 });
 
-// Warm the fast-moving caches every minute so clients get instant data
-cron.schedule("*/1 * * * *", async () => {
+// Warm the fast-moving caches every 5 minutes (respects API rate limits on cloud)
+cron.schedule("*/5 * * * *", async () => {
   try {
-    await getOrSet("indices", 60, fetchAllIndices);
+    await getOrSet("indices", 300, fetchAllIndices);
     await getOrSet("fx", 300, fetchFX);
   } catch (e) {
     console.warn("[cron] warm failed:", e.message);

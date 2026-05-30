@@ -26,7 +26,7 @@ r.get("/countries", (_req, res) => res.json({ data: COUNTRIES }));
 
 r.get("/indices", async (_req, res, next) => {
   try {
-    res.json(await getOrSet("indices", T("CACHE_TTL_QUOTES", 60), fetchAllIndices));
+    res.json(await getOrSet("indices", T("CACHE_TTL_QUOTES", 300), fetchAllIndices));
   } catch (e) { next(e); }
 });
 
@@ -116,7 +116,7 @@ r.get("/stocks", async (_req, res, next) => {
 r.get("/snapshot", async (_req, res, next) => {
   try {
     const [indices, fx, commodities, macro, rates, performance] = await Promise.all([
-      getOrSet("indices", T("CACHE_TTL_QUOTES", 60), fetchAllIndices),
+      getOrSet("indices", T("CACHE_TTL_QUOTES", 300), fetchAllIndices),
       getOrSet("fx", T("CACHE_TTL_FX", 300), fetchFX),
       getOrSet("commodities", T("CACHE_TTL_COMMODITIES", 300), fetchCommodities),
       getOrSet("macro", T("CACHE_TTL_MACRO", 86400), fetchMacro),
