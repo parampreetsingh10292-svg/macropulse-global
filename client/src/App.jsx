@@ -13,6 +13,7 @@ import FxTab from "./tabs/FxTab.jsx";
 import RatesTab from "./tabs/RatesTab.jsx";
 import NewsTab from "./tabs/NewsTab.jsx";
 import StocksTab from "./tabs/StocksTab.jsx";
+import FlowsTab from "./tabs/FlowsTab.jsx";
 
 const TABS = [
   { id: "indices", label: "📊 Live Indices" },
@@ -22,6 +23,7 @@ const TABS = [
   { id: "rates", label: "🏦 Rates & Calendar" },
   { id: "news", label: "📰 News & Risk" },
   { id: "stocks", label: "🫧 GDP & Report" },
+  { id: "flows", label: "🔥 Investment Flows" },
 ];
 
 export default function App() {
@@ -154,6 +156,7 @@ export default function App() {
         {tab === "rates" && <RatesTab countries={countries} active={active} />}
         {tab === "news" && <NewsTab countries={countries} active={active} />}
         {tab === "stocks" && <StocksTab countries={countries} active={active} setActive={setActive} />}
+        {tab === "flows" && <FlowsTab />}
 
         {/* FOOTER */}
         <div style={{ marginTop: 24, borderTop: "1px solid rgba(255,255,255,.04)", paddingTop: 14, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 6 }}>
