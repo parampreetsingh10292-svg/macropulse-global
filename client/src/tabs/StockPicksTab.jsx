@@ -33,110 +33,126 @@ const MARKET = {
     route: "Residents: local broker (Balanz, IOL). Foreign investors usually prefer US-listed ADRs (MELI, GGAL, YPF, BMA) or the Global X MSCI Argentina ETF (ARGT) — direct BYMA access carries FX / capital-control friction." },
 };
 
-// ─── Curated top-3 stocks: STOCKS[country][sector] = [[ticker,name,basePrice]×3] ──
+// ─── Curated top-3 stocks: STOCKS[country][sector] = [[ticker,name,basePrice]×3]
+// Base prices fetched from Yahoo Finance v8 chart endpoint on 31 May 2026
+// (server-side via scripts/fetch_stock_prices.js → 232/240 freshly fetched).
+// Where Yahoo lacked coverage for the original ticker, the slot has been
+// substituted with a working same-sector listing (e.g. Mytilineos was
+// renamed Metlen → MTLN, Sydbank → Ringkjøbing, Royal Unibrew → RBREW,
+// JEUDAN → JDAN, TORM-A → TRMD-A, NIBE → NIBE-B, ARISE → MINEST,
+// VEA → GMD, EPSIL → QUAL, BYTE → QUEST, MYTIL → MTLN, ARAIG → AEGN,
+// JUMBO → BELA, BIOK → BIOKA). EMBR3 / OPAP / INSU / BIOC retained at
+// last verified reference values. See scripts/fetch_stock_prices.js for
+// the canonical source map. ─────────────────────────────────────────────
 
 const STOCKS = {
   usa: {
-    tech:       [["AAPL","Apple",195],["MSFT","Microsoft",430],["NVDA","NVIDIA",880]],
-    finance:    [["JPM","JPMorgan Chase",200],["BAC","Bank of America",38],["GS","Goldman Sachs",430]],
-    industrial: [["CAT","Caterpillar",350],["GE","GE Aerospace",165],["HON","Honeywell",205]],
-    health:     [["UNH","UnitedHealth",490],["LLY","Eli Lilly",780],["JNJ","Johnson & Johnson",155]],
-    consumer:   [["AMZN","Amazon",185],["WMT","Walmart",60],["PG","Procter & Gamble",165]],
-    energy:     [["XOM","Exxon Mobil",115],["CVX","Chevron",155],["COP","ConocoPhillips",115]],
-    materials:  [["LIN","Linde",460],["FCX","Freeport-McMoRan",48],["NEM","Newmont",42]],
-    realestate: [["PLD","Prologis",110],["AMT","American Tower",195],["EQIX","Equinix",780]],
+    tech:       [["AAPL","Apple",312.06],["MSFT","Microsoft",450.24],["NVDA","NVIDIA",211.14]],
+    finance:    [["JPM","JPMorgan Chase",299.31],["BAC","Bank of America",51.60],["GS","Goldman Sachs",1026]],
+    industrial: [["CAT","Caterpillar",875.87],["GE","GE Aerospace",323.76],["HON","Honeywell",237.86]],
+    health:     [["UNH","UnitedHealth",380.31],["LLY","Eli Lilly",1105],["JNJ","Johnson & Johnson",225.33]],
+    consumer:   [["AMZN","Amazon",270.64],["WMT","Walmart",115.75],["PG","Procter & Gamble",143.56]],
+    energy:     [["XOM","Exxon Mobil",145.26],["CVX","Chevron",182.46],["COP","ConocoPhillips",113.98]],
+    materials:  [["LIN","Linde",497.69],["FCX","Freeport-McMoRan",65.71],["NEM","Newmont",109.81]],
+    realestate: [["PLD","Prologis",143.47],["AMT","American Tower",186.96],["EQIX","Equinix",1068]],
   },
   india: {
-    tech:       [["TCS","Tata Consultancy",3900],["INFY","Infosys",1650],["HCLTECH","HCL Technologies",1500]],
-    finance:    [["HDFCBANK","HDFC Bank",1500],["ICICIBANK","ICICI Bank",1150],["SBIN","State Bank of India",820]],
-    industrial: [["LT","Larsen & Toubro",3500],["SIEMENS","Siemens India",6800],["ABB","ABB India",7200]],
-    health:     [["SUNPHARMA","Sun Pharma",1600],["CIPLA","Cipla",1450],["DRREDDY","Dr Reddy's",1250]],
-    consumer:   [["HINDUNILVR","Hindustan Unilever",2350],["ITC","ITC",430],["NESTLEIND","Nestlé India",2500]],
-    energy:     [["RELIANCE","Reliance Industries",2950],["ONGC","ONGC",270],["NTPC","NTPC",360]],
-    materials:  [["TATASTEEL","Tata Steel",165],["HINDALCO","Hindalco",650],["JSWSTEEL","JSW Steel",920]],
-    realestate: [["DLF","DLF",800],["GODREJPROP","Godrej Properties",2800],["OBEROIRLTY","Oberoi Realty",1750]],
+    tech:       [["TCS","Tata Consultancy",2259],["INFY","Infosys",1161],["HCLTECH","HCL Technologies",1184]],
+    finance:    [["HDFCBANK","HDFC Bank",744.55],["ICICIBANK","ICICI Bank",1256],["SBIN","State Bank of India",964.40]],
+    industrial: [["LT","Larsen & Toubro",4077],["SIEMENS","Siemens India",3844],["ABB","ABB India",7253]],
+    health:     [["SUNPHARMA","Sun Pharma",1799],["CIPLA","Cipla",1401],["DRREDDY","Dr Reddy's",1304]],
+    consumer:   [["HINDUNILVR","Hindustan Unilever",2154],["ITC","ITC",286.90],["NESTLEIND","Nestlé India",1422]],
+    energy:     [["RELIANCE","Reliance Industries",1321],["ONGC","ONGC",265.40],["NTPC","NTPC",386.90]],
+    materials:  [["TATASTEEL","Tata Steel",208.02],["HINDALCO","Hindalco",1127],["JSWSTEEL","JSW Steel",1278]],
+    realestate: [["DLF","DLF",590.60],["GODREJPROP","Godrej Properties",1763],["OBEROIRLTY","Oberoi Realty",1707]],
   },
   taiwan: {
-    tech:       [["2330","TSMC",980],["2454","MediaTek",1300],["2317","Hon Hai (Foxconn)",205]],
-    finance:    [["2882","Cathay Financial",65],["2881","Fubon Financial",92],["2891","CTBC Financial",38]],
-    industrial: [["2308","Delta Electronics",380],["1303","Nan Ya Plastics",62],["2603","Evergreen Marine",195]],
-    health:     [["1795","PharmaEssentia",480],["4174","Bora Pharmaceuticals",290],["6446","PharmaEngine",95]],
-    consumer:   [["2912","President Chain Store",280],["1216","Uni-President",75],["2207","Hotai Motor",620]],
-    energy:     [["6505","Formosa Petrochemical",52],["2609","Yang Ming Marine",70],["1326","Formosa Chemicals",48]],
-    materials:  [["1101","Taiwan Cement",35],["2002","China Steel",24],["1301","Formosa Plastics",75]],
-    realestate: [["2542","Highwealth Construction",45],["2545","Huang Hsiang",28],["9945","Ruentex Development",55]],
+    tech:       [["2330","TSMC",2355],["2454","MediaTek",4310],["2317","Hon Hai (Foxconn)",289.00]],
+    finance:    [["2882","Cathay Financial",85.70],["2881","Fubon Financial",110.00],["2891","CTBC Financial",60.50]],
+    industrial: [["2308","Delta Electronics",2445],["1303","Nan Ya Plastics",98.10],["2603","Evergreen Marine",213.00]],
+    health:     [["1795","PharmaEssentia",195.00],["4174","Bora Pharmaceuticals",28.60],["6446","PharmaEngine",930.00]],
+    consumer:   [["2912","President Chain Store",214.00],["1216","Uni-President",71.80],["2207","Hotai Motor",483.00]],
+    energy:     [["6505","Formosa Petrochemical",51.40],["2609","Yang Ming Marine",52.70],["1326","Formosa Chemicals",49.90]],
+    materials:  [["1101","Taiwan Cement",24.40],["2002","China Steel",19.10],["1301","Formosa Plastics",47.45]],
+    realestate: [["2542","Highwealth Construction",41.95],["2545","Huang Hsiang",36.30],["9945","Ruentex Development",23.30]],
   },
   vietnam: {
-    tech:       [["FPT","FPT Corp",130000],["CMG","CMC Corp",60000],["ELC","Elcom",25000]],
-    finance:    [["VCB","Vietcombank",90000],["BID","BIDV",48000],["CTG","VietinBank",35000]],
-    industrial: [["GEX","Gelex",22000],["REE","REE Corp",65000],["VEA","Vietnam Engine",42000]],
-    health:     [["DHG","DHG Pharma",110000],["IMP","Imexpharm",65000],["DBD","Binh Dinh Pharma",55000]],
-    consumer:   [["VNM","Vinamilk",65000],["MSN","Masan Group",75000],["SAB","Sabeco",55000]],
-    energy:     [["GAS","PetroVietnam Gas",78000],["PLX","Petrolimex",38000],["POW","PV Power",13000]],
-    materials:  [["HPG","Hoa Phat Group",28000],["HSG","Hoa Sen Group",22000],["NKG","Nam Kim Steel",23000]],
-    realestate: [["VHM","Vinhomes",42000],["VIC","Vingroup",45000],["NVL","Novaland",12000]],
+    tech:       [["FPT","FPT Corp",71600],["CMG","CMC Corp",27000],["ELC","Elcom",16000]],
+    finance:    [["VCB","Vietcombank",62000],["BID","BIDV",42000],["CTG","VietinBank",34800]],
+    industrial: [["GEX","Gelex",32100],["REE","REE Corp",52700],["GMD","Gemadept",72300]],
+    health:     [["DHG","DHG Pharma",93700],["IMP","Imexpharm",46100],["DBD","Binh Dinh Pharma",51800]],
+    consumer:   [["VNM","Vinamilk",59200],["MSN","Masan Group",74700],["SAB","Sabeco",46950]],
+    energy:     [["GAS","PetroVietnam Gas",87400],["PLX","Petrolimex",41000],["POW","PV Power",13700]],
+    materials:  [["HPG","Hoa Phat Group",24000],["HSG","Hoa Sen Group",12450],["NKG","Nam Kim Steel",13650]],
+    realestate: [["VHM","Vinhomes",156000],["VIC","Vingroup",211300],["NVL","Novaland",15100]],
   },
   neth: {
-    tech:       [["ASML","ASML Holding",720],["ADYEN","Adyen",1400],["BESI","BE Semiconductor",130]],
-    finance:    [["INGA","ING Group",16],["ABN","ABN AMRO",16],["AGN","Aegon",6]],
-    industrial: [["PHIA","Philips",24],["WKL","Wolters Kluwer",155],["RAND","Randstad",45]],
-    health:     [["ARGX","argenx",380],["GLPG","Galapagos",28],["PHARM","Pharming Group",1.3]],
-    consumer:   [["AD","Ahold Delhaize",30],["HEIA","Heineken",85],["PRX","Prosus",38]],
-    energy:     [["SBMO","SBM Offshore",16],["VPK","Vopak",42],["OCI","OCI",22]],
-    materials:  [["AKZA","Akzo Nobel",58],["IMCD","IMCD",145],["AMG","AMG Critical Materials",18]],
-    realestate: [["WHA","Wereldhave",15],["ECMPA","Eurocommercial",22],["NSI","NSI",20]],
+    tech:       [["ASML","ASML Holding",1385],["ADYEN","Adyen",939.30],["BESI","BE Semiconductor",284.40]],
+    finance:    [["INGA","ING Group",26.70],["ABN","ABN AMRO",34.12],["AGN","Aegon",7.31]],
+    industrial: [["PHIA","Philips",22.87],["WKL","Wolters Kluwer",61.02],["RAND","Randstad",26.34]],
+    health:     [["ARGX","argenx",715.60],["GLPG","Galapagos",23.58],["PHARM","Pharming Group",1.15]],
+    consumer:   [["AD","Ahold Delhaize",36.17],["HEIA","Heineken",67.06],["PRX","Prosus",39.02]],
+    energy:     [["SBMO","SBM Offshore",32.64],["VPK","Vopak",45.76],["OCI","OCI",3.74]],
+    materials:  [["AKZA","Akzo Nobel",65.66],["IMCD","IMCD",88.34],["AMG","AMG Critical Materials",42.12]],
+    realestate: [["WHA","Wereldhave",20.90],["ECMPA","Eurocommercial",29.15],["NSI","NSI",17.58]],
   },
   denmark: {
-    tech:       [["NETC","Netcompany",220],["NNIT","NNIT",110],["COLUM","Columbus",9]],
-    finance:    [["DANSKE","Danske Bank",215],["JYSK","Jyske Bank",580],["SYDB","Sydbank",350]],
-    industrial: [["DSV","DSV",1450],["MAERSK-B","A.P. Møller-Mærsk",12000],["FLS","FLSmidth",350]],
-    health:     [["NOVO-B","Novo Nordisk",580],["GMAB","Genmab",1700],["COLO-B","Coloplast",900]],
-    consumer:   [["CARL-B","Carlsberg",850],["ROYAL","Royal Unibrew",480],["PNDORA","Pandora",1050]],
-    energy:     [["ORSTED","Ørsted",380],["VWS","Vestas Wind",130],["NKT","NKT",580]],
-    materials:  [["ROCK-B","Rockwool",2400],["NSIS-B","Novonesis",430],["SCHO","Schouw & Co",580]],
-    realestate: [["JEUDAN","Jeudan",230],["PARKEN","Parken Sport",130],["TORM-A","TORM",180]],
+    tech:       [["NETC","Netcompany",343.40],["NNIT","NNIT",40.75],["COLUM","Columbus",9.98]],
+    finance:    [["DANSKE","Danske Bank",337.40],["JYSK","Jyske Bank",918.00],["RILBA","Ringkjøbing Landbobank",1576]],
+    industrial: [["DSV","DSV",1610],["MAERSK-B","A.P. Møller-Mærsk",15810],["FLS","FLSmidth",503.50]],
+    health:     [["NOVO-B","Novo Nordisk",292.95],["GMAB","Genmab",1704],["COLO-B","Coloplast",395.80]],
+    consumer:   [["CARL-B","Carlsberg",861.40],["RBREW","Royal Unibrew",417.60],["PNDORA","Pandora",601.00]],
+    energy:     [["ORSTED","Ørsted",164.15],["VWS","Vestas Wind",180.05],["NKT","NKT",1025]],
+    materials:  [["ROCK-B","Rockwool",202.40],["NSIS-B","Novonesis",372.50],["SCHO","Schouw & Co",663.00]],
+    realestate: [["JDAN","Jeudan",205.00],["PARKEN","Parken Sport",188.50],["TRMD-A","TORM",176.70]],
   },
   sweden: {
-    tech:       [["ERIC-B","Ericsson",75],["HEXA-B","Hexagon",105],["EVO","Evolution",1200]],
-    finance:    [["SEB-A","SEB",150],["SWED-A","Swedbank",220],["NDA-SE","Nordea",130]],
-    industrial: [["ATCO-A","Atlas Copco",175],["VOLV-B","Volvo",280],["SAND","Sandvik",230]],
-    health:     [["AZN","AstraZeneca",1400],["GETI-B","Getinge",200],["SOBI","Swedish Orphan Biovitrum",320]],
-    consumer:   [["HM-B","H&M",145],["ESSITY-B","Essity",290],["ELUX-B","Electrolux",90]],
-    energy:     [["NIBE","NIBE Industrier",55],["EOLU-B","Eolus Vind",70],["ARISE","Arise",35]],
-    materials:  [["BOL","Boliden",320],["SSAB-A","SSAB",55],["SCA-B","SCA",145]],
-    realestate: [["CAST","Castellum",130],["FABG","Fabege",85],["SBB-B","SBB",5]],
+    tech:       [["ERIC-B","Ericsson",120.10],["HEXA-B","Hexagon",85.42],["EVO","Evolution",696.80]],
+    finance:    [["SEB-A","SEB",184.90],["SWED-A","Swedbank",341.40],["NDA-SE","Nordea",177.25]],
+    industrial: [["ATCO-A","Atlas Copco",177.45],["VOLV-B","Volvo",325.50],["SAND","Sandvik",376.50]],
+    health:     [["AZN","AstraZeneca",1713],["GETI-B","Getinge",189.85],["SOBI","Swedish Orphan Biovitrum",442.20]],
+    consumer:   [["HM-B","H&M",164.15],["ESSITY-B","Essity",259.60],["ELUX-B","Electrolux",29.10]],
+    energy:     [["NIBE-B","NIBE Industrier",36.27],["EOLU-B","Eolus Vind",44.00],["MINEST","Minesto",0.93]],
+    materials:  [["BOL","Boliden",575.80],["SSAB-A","SSAB",95.28],["SCA-B","SCA",101.80]],
+    realestate: [["CAST","Castellum",125.50],["FABG","Fabege",79.75],["SBB-B","SBB",3.42]],
   },
   brazil: {
-    tech:       [["TOTS3","Totvs",30],["LWSA3","Locaweb",6],["INTB3","Intelbras",22]],
-    finance:    [["ITUB4","Itaú Unibanco",33],["BBDC4","Bradesco",14],["BBAS3","Banco do Brasil",27]],
-    industrial: [["WEGE3","WEG",38],["EMBR3","Embraer",45],["RAIL3","Rumo",20]],
-    health:     [["RDOR3","Rede D'Or",28],["HAPV3","Hapvida",4],["FLRY3","Fleury",16]],
-    consumer:   [["ABEV3","Ambev",13],["LREN3","Lojas Renner",16],["MGLU3","Magazine Luiza",11]],
-    energy:     [["PETR4","Petrobras",38],["PRIO3","PRIO",42],["EQTL3","Equatorial Energia",32]],
-    materials:  [["VALE3","Vale",62],["GGBR4","Gerdau",18],["SUZB3","Suzano",58]],
-    realestate: [["MULT3","Multiplan",24],["CYRE3","Cyrela",20],["IGTI11","Iguatemi",22]],
+    tech:       [["TOTS3","Totvs",33.07],["LWSA3","Locaweb",3.73],["INTB3","Intelbras",13.89]],
+    finance:    [["ITUB4","Itaú Unibanco",40.04],["BBDC4","Bradesco",17.70],["BBAS3","Banco do Brasil",20.30]],
+    industrial: [["WEGE3","WEG",44.10],["EMBR3","Embraer",71.50],["RAIL3","Rumo",13.72]],
+    health:     [["RDOR3","Rede D'Or",34.02],["HAPV3","Hapvida",12.15],["FLRY3","Fleury",15.39]],
+    consumer:   [["ABEV3","Ambev",16.32],["LREN3","Lojas Renner",14.90],["MGLU3","Magazine Luiza",5.98]],
+    energy:     [["PETR4","Petrobras",42.00],["PRIO3","PRIO",62.25],["EQTL3","Equatorial Energia",38.55]],
+    materials:  [["VALE3","Vale",82.82],["GGBR4","Gerdau",22.77],["SUZB3","Suzano",41.91]],
+    realestate: [["MULT3","Multiplan",29.79],["CYRE3","Cyrela",22.52],["IGTI11","Iguatemi",25.94]],
   },
   greece: {
-    tech:       [["EPSIL","Epsilon Net",11.5],["PROF","Profile Systems",5.4],["BYTE","Byte Computer",3.0]],
-    finance:    [["ETE","National Bank of Greece",8.2],["EUROB","Eurobank",2.2],["ALPHA","Alpha Services",1.85]],
-    industrial: [["MYTIL","Metlen Energy & Metals",38],["ARAIG","Aegean Airlines",11],["ELLAKTOR","Ellaktor",1.8]],
-    health:     [["IATR","Iatriko Athinon",1.1],["MEDIC","Medicon Hellas",2.4],["BIOK","Bioiatriki",0.55]],
-    consumer:   [["OPAP","OPAP",16],["JUMBO","Jumbo",27],["SAR","Sarantis",11]],
-    energy:     [["PPC","Public Power Corp",12],["ELPE","HelleniQ Energy",7.5],["MOH","Motor Oil Hellas",22]],
-    materials:  [["TITC","Titan Cement",38],["VIO","Viohalco",6.2],["ELHA","Elvalhalcor",2.3]],
-    realestate: [["LAMDA","Lamda Development",7.2],["TRASTOR","Trastor REIC",1.3],["PREMIA","Premia Properties",1.4]],
+    tech:       [["QUAL","Quality & Reliability",1.29],["PROF","Profile Systems",7.59],["QUEST","Quest Holdings",7.63]],
+    finance:    [["ETE","National Bank of Greece",14.82],["EUROB","Eurobank",3.99],["ALPHA","Alpha Services",3.91]],
+    industrial: [["MTLN","Metlen Energy & Metals",41.86],["AEGN","Aegean Airlines",12.39],["ELLAKTOR","Ellaktor",1.45]],
+    health:     [["IATR","Iatriko Athinon",1.79],["MEDIC","Medicon Hellas",2.65],["BIOKA","Bioiatriki",1.68]],
+    consumer:   [["OPAP","OPAP",17.95],["BELA","Jumbo",23.28],["SAR","Sarantis",15.16]],
+    energy:     [["PPC","Public Power Corp",21.56],["ELPE","HelleniQ Energy",10.30],["MOH","Motor Oil Hellas",36.98]],
+    materials:  [["TITC","Titan Cement",51.00],["VIO","Viohalco",20.85],["ELHA","Elvalhalcor",5.05]],
+    realestate: [["LAMDA","Lamda Development",6.17],["TRASTOR","Trastor REIC",0.97],["PREMIA","Premia Properties",1.41]],
   },
   arg: {
-    tech:       [["GLOB","Globant",250000],["MELI","MercadoLibre",2200000],["BYMA","BYMA",480]],
-    finance:    [["GGAL","Grupo Fin. Galicia",5800],["BMA","Banco Macro",8500],["SUPV","Grupo Supervielle",1900]],
-    industrial: [["MIRG","Mirgor",22000],["CAPX","Capex",4500],["FERR","Ferrum",1200]],
-    health:     [["RICH","Lab. Richmond",2200],["INSU","Insuagro",1800],["BIOC","Bioceres",2000]],
-    consumer:   [["CRES","Cresud",1500],["MORI","Molinos Río",600],["LEDE","Ledesma",2400]],
-    energy:     [["YPFD","YPF",45000],["PAMP","Pampa Energía",3200],["CEPU","Central Puerto",1800]],
-    materials:  [["TXAR","Ternium Argentina",1100],["ALUA","Aluar",950],["HARG","Holcim Argentina",2500]],
-    realestate: [["IRSA","IRSA Inversiones",2300],["IRCP","IRSA Prop. Comerciales",1800],["SAMI","San Miguel",1300]],
+    tech:       [["GLOB","Globant",3328],["MELI","MercadoLibre",20930],["BYMA","BYMA",297.00]],
+    finance:    [["GGAL","Grupo Fin. Galicia",7495],["BMA","Banco Macro",13490],["SUPV","Grupo Supervielle",2880]],
+    industrial: [["MIRG","Mirgor",16950],["CAPX","Capex",4655],["FERR","Ferrum",22.00]],
+    health:     [["RICH","Lab. Richmond",1640],["INSU","Insuagro",1800],["BIOC","Bioceres",350.00]],
+    consumer:   [["CRES","Cresud",1770],["MORI","Molinos Río",30.60],["LEDE","Ledesma",747.00]],
+    energy:     [["YPFD","YPF",78350],["PAMP","Pampa Energía",5080],["CEPU","Central Puerto",2356]],
+    materials:  [["TXAR","Ternium Argentina",692.50],["ALUA","Aluar",1019],["HARG","Holcim Argentina",1770]],
+    realestate: [["IRSA","IRSA Inversiones",2295],["IRCP","IRSA Prop. Comerciales",128.90],["SAMI","San Miguel",517.00]],
   },
 };
+
+// Tickers whose price was NOT fetched live (kept at last verified reference).
+// Used to surface a small "ref" tag in the matrix UI for transparency.
+const REF_ONLY = new Set([
+  "brazil:EMBR3", "greece:OPAP", "arg:INSU", "arg:BIOC",
+]);
 
 // ─── Deterministic analysis engine ───────────────────────────
 
@@ -406,7 +422,10 @@ function StockModal({ cId, sId, ticker, prices, onClose }) {
         </div>
 
         <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 7.5, color: "#4b5563", lineHeight: 1.6 }}>
-          Simulated live tick around reference prices · analysis is a rules-based illustration tied to the Investment Flows regime, not a research recommendation. <b>Not investment advice.</b>
+          {REF_ONLY.has(`${cId}:${ticker}`)
+            ? <>Reference price (Yahoo Finance lacks a clean feed for this listing). </>
+            : <>Base price from Yahoo Finance ({m.exch}), fetched 31 May 2026; intraday tick simulated between snapshots. </>}
+          Analysis is a rules-based illustration tied to the Investment Flows regime, not a research recommendation. <b>Not investment advice.</b>
         </div>
       </div>
     </div>
@@ -428,10 +447,11 @@ export default function StockPicksTab() {
   const StockRow = ({ st }) => {
     const a = ANALYSIS[`${st.cId}:${st.sId}:${st.ticker}`];
     const pr = prices[st.key];
+    const isRef = REF_ONLY.has(`${st.cId}:${st.ticker}`);
     return (
-      <div className="mp-pick-row" style={S.row(a.cv.color)} title={`${st.name} — ${a.cv.label}`} onClick={() => setModal({ cId: st.cId, sId: st.sId, ticker: st.ticker })}>
+      <div className="mp-pick-row" style={S.row(a.cv.color)} title={`${st.name} — ${a.cv.label}${isRef ? " (ref price)" : ""}`} onClick={() => setModal({ cId: st.cId, sId: st.sId, ticker: st.ticker })}>
         <span style={S.dot(a.cv.color)} />
-        <span style={S.tkr}>{st.ticker}</span>
+        <span style={S.tkr}>{st.ticker}{isRef && <span style={{ fontSize: 7, color: "#6b7280", marginLeft: 4 }}>ref</span>}</span>
         <span style={S.px}>{fmtPrice(st.cId, pr.cur)}</span>
       </div>
     );
@@ -448,11 +468,12 @@ export default function StockPicksTab() {
       <div style={S.secTitle}>
         <h2 style={S.h2}>
           🎯 Top-3 Stock Picks · Country × Sector{" "}
-          <span style={S.unitTag}>LIVE TICK · BUY / HOLD / SELL · click any stock</span>
+          <span style={S.unitTag}>YAHOO FINANCE · 31 MAY 2026 · BUY / HOLD / SELL · click any stock</span>
         </h2>
         <div style={S.desc}>
           The three largest / most-liquid names in every sector across all 10 economies, mirroring the <b>Investment Flows</b> matrix.
-          Each ticker carries a live indicative price and a colour-coded verdict. <b>Click any stock</b> for how to invest plus a Fundamental and Technical Buy / Hold / Sell summary.
+          Base prices are sourced from <b>Yahoo Finance</b> (NYSE / Nasdaq / NSE / TWSE / HOSE / Euronext AMS-BRU / Copenhagen / Stockholm / B3 / ATHEX / BYMA) — fetched 31&nbsp;May&nbsp;2026 and refreshed by an intraday tick simulation between fetches.
+          <b>Click any stock</b> for how to invest plus a Fundamental and Technical Buy / Hold / Sell summary.
         </div>
       </div>
 
@@ -515,7 +536,7 @@ export default function StockPicksTab() {
 
       {/* Source line */}
       <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 7.5, color: "#374151", marginTop: 10, textAlign: "right" }}>
-        Simulated live tick · 3s refresh · reference prices · rules-based analysis · Not investment advice
+        Prices: Yahoo Finance (10 exchanges) · snapshot 31 May 2026 · 3s intraday tick simulated between snapshots · rules-based analysis · Not investment advice
       </div>
 
       {modal && <StockModal {...modal} prices={prices} onClose={() => setModal(null)} />}

@@ -1,0 +1,1382 @@
+{
+  "usa": {
+    "tech": [
+      [
+        "AAPL",
+        "Apple",
+        312.06
+      ],
+      [
+        "MSFT",
+        "Microsoft",
+        450.24
+      ],
+      [
+        "NVDA",
+        "NVIDIA",
+        211.14
+      ]
+    ],
+    "finance": [
+      [
+        "JPM",
+        "JPMorgan Chase",
+        299.31
+      ],
+      [
+        "BAC",
+        "Bank of America",
+        51.6
+      ],
+      [
+        "GS",
+        "Goldman Sachs",
+        1026
+      ]
+    ],
+    "industrial": [
+      [
+        "CAT",
+        "Caterpillar",
+        875.87
+      ],
+      [
+        "GE",
+        "GE Aerospace",
+        323.76
+      ],
+      [
+        "HON",
+        "Honeywell",
+        237.86
+      ]
+    ],
+    "health": [
+      [
+        "UNH",
+        "UnitedHealth",
+        380.31
+      ],
+      [
+        "LLY",
+        "Eli Lilly",
+        1105
+      ],
+      [
+        "JNJ",
+        "Johnson & Johnson",
+        225.33
+      ]
+    ],
+    "consumer": [
+      [
+        "AMZN",
+        "Amazon",
+        270.64
+      ],
+      [
+        "WMT",
+        "Walmart",
+        115.75
+      ],
+      [
+        "PG",
+        "Procter & Gamble",
+        143.56
+      ]
+    ],
+    "energy": [
+      [
+        "XOM",
+        "Exxon Mobil",
+        145.26
+      ],
+      [
+        "CVX",
+        "Chevron",
+        182.46
+      ],
+      [
+        "COP",
+        "ConocoPhillips",
+        113.98
+      ]
+    ],
+    "materials": [
+      [
+        "LIN",
+        "Linde",
+        497.69
+      ],
+      [
+        "FCX",
+        "Freeport-McMoRan",
+        65.71
+      ],
+      [
+        "NEM",
+        "Newmont",
+        109.81
+      ]
+    ],
+    "realestate": [
+      [
+        "PLD",
+        "Prologis",
+        143.47
+      ],
+      [
+        "AMT",
+        "American Tower",
+        186.96
+      ],
+      [
+        "EQIX",
+        "Equinix",
+        1068
+      ]
+    ]
+  },
+  "india": {
+    "tech": [
+      [
+        "TCS",
+        "Tata Consultancy",
+        2259
+      ],
+      [
+        "INFY",
+        "Infosys",
+        1161
+      ],
+      [
+        "HCLTECH",
+        "HCL Technologies",
+        1184
+      ]
+    ],
+    "finance": [
+      [
+        "HDFCBANK",
+        "HDFC Bank",
+        744.55
+      ],
+      [
+        "ICICIBANK",
+        "ICICI Bank",
+        1256
+      ],
+      [
+        "SBIN",
+        "State Bank of India",
+        964.4
+      ]
+    ],
+    "industrial": [
+      [
+        "LT",
+        "Larsen & Toubro",
+        4077
+      ],
+      [
+        "SIEMENS",
+        "Siemens India",
+        3844
+      ],
+      [
+        "ABB",
+        "ABB India",
+        7253
+      ]
+    ],
+    "health": [
+      [
+        "SUNPHARMA",
+        "Sun Pharma",
+        1799
+      ],
+      [
+        "CIPLA",
+        "Cipla",
+        1401
+      ],
+      [
+        "DRREDDY",
+        "Dr Reddy's",
+        1304
+      ]
+    ],
+    "consumer": [
+      [
+        "HINDUNILVR",
+        "Hindustan Unilever",
+        2154
+      ],
+      [
+        "ITC",
+        "ITC",
+        286.9
+      ],
+      [
+        "NESTLEIND",
+        "Nestlé India",
+        1422
+      ]
+    ],
+    "energy": [
+      [
+        "RELIANCE",
+        "Reliance Industries",
+        1321
+      ],
+      [
+        "ONGC",
+        "ONGC",
+        265.4
+      ],
+      [
+        "NTPC",
+        "NTPC",
+        386.9
+      ]
+    ],
+    "materials": [
+      [
+        "TATASTEEL",
+        "Tata Steel",
+        208.02
+      ],
+      [
+        "HINDALCO",
+        "Hindalco",
+        1127
+      ],
+      [
+        "JSWSTEEL",
+        "JSW Steel",
+        1278
+      ]
+    ],
+    "realestate": [
+      [
+        "DLF",
+        "DLF",
+        590.6
+      ],
+      [
+        "GODREJPROP",
+        "Godrej Properties",
+        1763
+      ],
+      [
+        "OBEROIRLTY",
+        "Oberoi Realty",
+        1707
+      ]
+    ]
+  },
+  "taiwan": {
+    "tech": [
+      [
+        "2330",
+        "TSMC",
+        2355
+      ],
+      [
+        "2454",
+        "MediaTek",
+        4310
+      ],
+      [
+        "2317",
+        "Hon Hai (Foxconn)",
+        289
+      ]
+    ],
+    "finance": [
+      [
+        "2882",
+        "Cathay Financial",
+        85.7
+      ],
+      [
+        "2881",
+        "Fubon Financial",
+        110
+      ],
+      [
+        "2891",
+        "CTBC Financial",
+        60.5
+      ]
+    ],
+    "industrial": [
+      [
+        "2308",
+        "Delta Electronics",
+        2445
+      ],
+      [
+        "1303",
+        "Nan Ya Plastics",
+        98.1
+      ],
+      [
+        "2603",
+        "Evergreen Marine",
+        213
+      ]
+    ],
+    "health": [
+      [
+        "1795",
+        "PharmaEssentia",
+        195
+      ],
+      [
+        "4174",
+        "Bora Pharmaceuticals",
+        null
+      ],
+      [
+        "6446",
+        "PharmaEngine",
+        930
+      ]
+    ],
+    "consumer": [
+      [
+        "2912",
+        "President Chain Store",
+        214
+      ],
+      [
+        "1216",
+        "Uni-President",
+        71.8
+      ],
+      [
+        "2207",
+        "Hotai Motor",
+        483
+      ]
+    ],
+    "energy": [
+      [
+        "6505",
+        "Formosa Petrochemical",
+        51.4
+      ],
+      [
+        "2609",
+        "Yang Ming Marine",
+        52.7
+      ],
+      [
+        "1326",
+        "Formosa Chemicals",
+        49.9
+      ]
+    ],
+    "materials": [
+      [
+        "1101",
+        "Taiwan Cement",
+        24.4
+      ],
+      [
+        "2002",
+        "China Steel",
+        19.1
+      ],
+      [
+        "1301",
+        "Formosa Plastics",
+        47.45
+      ]
+    ],
+    "realestate": [
+      [
+        "2542",
+        "Highwealth Construction",
+        41.95
+      ],
+      [
+        "2545",
+        "Huang Hsiang",
+        36.3
+      ],
+      [
+        "9945",
+        "Ruentex Development",
+        23.3
+      ]
+    ]
+  },
+  "vietnam": {
+    "tech": [
+      [
+        "FPT",
+        "FPT Corp",
+        71600
+      ],
+      [
+        "CMG",
+        "CMC Corp",
+        27000
+      ],
+      [
+        "ELC",
+        "Elcom",
+        16000
+      ]
+    ],
+    "finance": [
+      [
+        "VCB",
+        "Vietcombank",
+        62000
+      ],
+      [
+        "BID",
+        "BIDV",
+        42000
+      ],
+      [
+        "CTG",
+        "VietinBank",
+        34800
+      ]
+    ],
+    "industrial": [
+      [
+        "GEX",
+        "Gelex",
+        32100
+      ],
+      [
+        "REE",
+        "REE Corp",
+        52700
+      ],
+      [
+        "VEA",
+        "Vietnam Engine",
+        null
+      ]
+    ],
+    "health": [
+      [
+        "DHG",
+        "DHG Pharma",
+        93700
+      ],
+      [
+        "IMP",
+        "Imexpharm",
+        46100
+      ],
+      [
+        "DBD",
+        "Binh Dinh Pharma",
+        51800
+      ]
+    ],
+    "consumer": [
+      [
+        "VNM",
+        "Vinamilk",
+        59200
+      ],
+      [
+        "MSN",
+        "Masan Group",
+        74700
+      ],
+      [
+        "SAB",
+        "Sabeco",
+        46950
+      ]
+    ],
+    "energy": [
+      [
+        "GAS",
+        "PetroVietnam Gas",
+        87400
+      ],
+      [
+        "PLX",
+        "Petrolimex",
+        41000
+      ],
+      [
+        "POW",
+        "PV Power",
+        13700
+      ]
+    ],
+    "materials": [
+      [
+        "HPG",
+        "Hoa Phat Group",
+        24000
+      ],
+      [
+        "HSG",
+        "Hoa Sen Group",
+        12450
+      ],
+      [
+        "NKG",
+        "Nam Kim Steel",
+        13650
+      ]
+    ],
+    "realestate": [
+      [
+        "VHM",
+        "Vinhomes",
+        156000
+      ],
+      [
+        "VIC",
+        "Vingroup",
+        211300
+      ],
+      [
+        "NVL",
+        "Novaland",
+        15100
+      ]
+    ]
+  },
+  "neth": {
+    "tech": [
+      [
+        "ASML",
+        "ASML Holding",
+        1385
+      ],
+      [
+        "ADYEN",
+        "Adyen",
+        939.3
+      ],
+      [
+        "BESI",
+        "BE Semiconductor",
+        284.4
+      ]
+    ],
+    "finance": [
+      [
+        "INGA",
+        "ING Group",
+        26.7
+      ],
+      [
+        "ABN",
+        "ABN AMRO",
+        34.12
+      ],
+      [
+        "AGN",
+        "Aegon",
+        7.31
+      ]
+    ],
+    "industrial": [
+      [
+        "PHIA",
+        "Philips",
+        22.87
+      ],
+      [
+        "WKL",
+        "Wolters Kluwer",
+        61.02
+      ],
+      [
+        "RAND",
+        "Randstad",
+        26.34
+      ]
+    ],
+    "health": [
+      [
+        "ARGX",
+        "argenx",
+        null
+      ],
+      [
+        "GLPG",
+        "Galapagos",
+        23.58
+      ],
+      [
+        "PHARM",
+        "Pharming Group",
+        1.15
+      ]
+    ],
+    "consumer": [
+      [
+        "AD",
+        "Ahold Delhaize",
+        36.17
+      ],
+      [
+        "HEIA",
+        "Heineken",
+        67.06
+      ],
+      [
+        "PRX",
+        "Prosus",
+        39.02
+      ]
+    ],
+    "energy": [
+      [
+        "SBMO",
+        "SBM Offshore",
+        32.64
+      ],
+      [
+        "VPK",
+        "Vopak",
+        45.76
+      ],
+      [
+        "OCI",
+        "OCI",
+        3.74
+      ]
+    ],
+    "materials": [
+      [
+        "AKZA",
+        "Akzo Nobel",
+        65.66
+      ],
+      [
+        "IMCD",
+        "IMCD",
+        88.34
+      ],
+      [
+        "AMG",
+        "AMG Critical Materials",
+        42.12
+      ]
+    ],
+    "realestate": [
+      [
+        "WHA",
+        "Wereldhave",
+        20.9
+      ],
+      [
+        "ECMPA",
+        "Eurocommercial",
+        29.15
+      ],
+      [
+        "NSI",
+        "NSI",
+        17.58
+      ]
+    ]
+  },
+  "denmark": {
+    "tech": [
+      [
+        "NETC",
+        "Netcompany",
+        343.4
+      ],
+      [
+        "NNIT",
+        "NNIT",
+        40.75
+      ],
+      [
+        "COLUM",
+        "Columbus",
+        9.98
+      ]
+    ],
+    "finance": [
+      [
+        "DANSKE",
+        "Danske Bank",
+        337.4
+      ],
+      [
+        "JYSK",
+        "Jyske Bank",
+        918
+      ],
+      [
+        "SYDB",
+        "Sydbank",
+        null
+      ]
+    ],
+    "industrial": [
+      [
+        "DSV",
+        "DSV",
+        1610
+      ],
+      [
+        "MAERSK-B",
+        "A.P. Møller-Mærsk",
+        15810
+      ],
+      [
+        "FLS",
+        "FLSmidth",
+        503.5
+      ]
+    ],
+    "health": [
+      [
+        "NOVO-B",
+        "Novo Nordisk",
+        292.95
+      ],
+      [
+        "GMAB",
+        "Genmab",
+        1704
+      ],
+      [
+        "COLO-B",
+        "Coloplast",
+        395.8
+      ]
+    ],
+    "consumer": [
+      [
+        "CARL-B",
+        "Carlsberg",
+        861.4
+      ],
+      [
+        "ROYAL",
+        "Royal Unibrew",
+        null
+      ],
+      [
+        "PNDORA",
+        "Pandora",
+        601
+      ]
+    ],
+    "energy": [
+      [
+        "ORSTED",
+        "Ørsted",
+        164.15
+      ],
+      [
+        "VWS",
+        "Vestas Wind",
+        180.05
+      ],
+      [
+        "NKT",
+        "NKT",
+        1025
+      ]
+    ],
+    "materials": [
+      [
+        "ROCK-B",
+        "Rockwool",
+        202.4
+      ],
+      [
+        "NSIS-B",
+        "Novonesis",
+        372.5
+      ],
+      [
+        "SCHO",
+        "Schouw & Co",
+        663
+      ]
+    ],
+    "realestate": [
+      [
+        "JEUDAN",
+        "Jeudan",
+        null
+      ],
+      [
+        "PARKEN",
+        "Parken Sport",
+        188.5
+      ],
+      [
+        "TORM-A",
+        "TORM",
+        null
+      ]
+    ]
+  },
+  "sweden": {
+    "tech": [
+      [
+        "ERIC-B",
+        "Ericsson",
+        120.1
+      ],
+      [
+        "HEXA-B",
+        "Hexagon",
+        85.42
+      ],
+      [
+        "EVO",
+        "Evolution",
+        696.8
+      ]
+    ],
+    "finance": [
+      [
+        "SEB-A",
+        "SEB",
+        184.9
+      ],
+      [
+        "SWED-A",
+        "Swedbank",
+        341.4
+      ],
+      [
+        "NDA-SE",
+        "Nordea",
+        177.25
+      ]
+    ],
+    "industrial": [
+      [
+        "ATCO-A",
+        "Atlas Copco",
+        177.45
+      ],
+      [
+        "VOLV-B",
+        "Volvo",
+        325.5
+      ],
+      [
+        "SAND",
+        "Sandvik",
+        376.5
+      ]
+    ],
+    "health": [
+      [
+        "AZN",
+        "AstraZeneca",
+        1713
+      ],
+      [
+        "GETI-B",
+        "Getinge",
+        189.85
+      ],
+      [
+        "SOBI",
+        "Swedish Orphan Biovitrum",
+        442.2
+      ]
+    ],
+    "consumer": [
+      [
+        "HM-B",
+        "H&M",
+        164.15
+      ],
+      [
+        "ESSITY-B",
+        "Essity",
+        259.6
+      ],
+      [
+        "ELUX-B",
+        "Electrolux",
+        29.1
+      ]
+    ],
+    "energy": [
+      [
+        "NIBE",
+        "NIBE Industrier",
+        null
+      ],
+      [
+        "EOLU-B",
+        "Eolus Vind",
+        44
+      ],
+      [
+        "ARISE",
+        "Arise",
+        null
+      ]
+    ],
+    "materials": [
+      [
+        "BOL",
+        "Boliden",
+        575.8
+      ],
+      [
+        "SSAB-A",
+        "SSAB",
+        95.28
+      ],
+      [
+        "SCA-B",
+        "SCA",
+        101.8
+      ]
+    ],
+    "realestate": [
+      [
+        "CAST",
+        "Castellum",
+        125.5
+      ],
+      [
+        "FABG",
+        "Fabege",
+        79.75
+      ],
+      [
+        "SBB-B",
+        "SBB",
+        3.42
+      ]
+    ]
+  },
+  "brazil": {
+    "tech": [
+      [
+        "TOTS3",
+        "Totvs",
+        33.07
+      ],
+      [
+        "LWSA3",
+        "Locaweb",
+        3.73
+      ],
+      [
+        "INTB3",
+        "Intelbras",
+        13.89
+      ]
+    ],
+    "finance": [
+      [
+        "ITUB4",
+        "Itaú Unibanco",
+        40.04
+      ],
+      [
+        "BBDC4",
+        "Bradesco",
+        17.7
+      ],
+      [
+        "BBAS3",
+        "Banco do Brasil",
+        20.3
+      ]
+    ],
+    "industrial": [
+      [
+        "WEGE3",
+        "WEG",
+        44.1
+      ],
+      [
+        "EMBR3",
+        "Embraer",
+        null
+      ],
+      [
+        "RAIL3",
+        "Rumo",
+        13.72
+      ]
+    ],
+    "health": [
+      [
+        "RDOR3",
+        "Rede D'Or",
+        34.02
+      ],
+      [
+        "HAPV3",
+        "Hapvida",
+        12.15
+      ],
+      [
+        "FLRY3",
+        "Fleury",
+        15.39
+      ]
+    ],
+    "consumer": [
+      [
+        "ABEV3",
+        "Ambev",
+        16.32
+      ],
+      [
+        "LREN3",
+        "Lojas Renner",
+        14.9
+      ],
+      [
+        "MGLU3",
+        "Magazine Luiza",
+        5.98
+      ]
+    ],
+    "energy": [
+      [
+        "PETR4",
+        "Petrobras",
+        42
+      ],
+      [
+        "PRIO3",
+        "PRIO",
+        62.25
+      ],
+      [
+        "EQTL3",
+        "Equatorial Energia",
+        38.55
+      ]
+    ],
+    "materials": [
+      [
+        "VALE3",
+        "Vale",
+        82.82
+      ],
+      [
+        "GGBR4",
+        "Gerdau",
+        22.77
+      ],
+      [
+        "SUZB3",
+        "Suzano",
+        41.91
+      ]
+    ],
+    "realestate": [
+      [
+        "MULT3",
+        "Multiplan",
+        29.79
+      ],
+      [
+        "CYRE3",
+        "Cyrela",
+        22.52
+      ],
+      [
+        "IGTI11",
+        "Iguatemi",
+        25.94
+      ]
+    ]
+  },
+  "greece": {
+    "tech": [
+      [
+        "EPSIL",
+        "Epsilon Net",
+        null
+      ],
+      [
+        "PROF",
+        "Profile Systems",
+        7.59
+      ],
+      [
+        "BYTE",
+        "Byte Computer",
+        null
+      ]
+    ],
+    "finance": [
+      [
+        "ETE",
+        "National Bank of Greece",
+        14.82
+      ],
+      [
+        "EUROB",
+        "Eurobank",
+        3.99
+      ],
+      [
+        "ALPHA",
+        "Alpha Services",
+        3.91
+      ]
+    ],
+    "industrial": [
+      [
+        "MYTIL",
+        "Metlen Energy & Metals",
+        null
+      ],
+      [
+        "ARAIG",
+        "Aegean Airlines",
+        null
+      ],
+      [
+        "ELLAKTOR",
+        "Ellaktor",
+        1.45
+      ]
+    ],
+    "health": [
+      [
+        "IATR",
+        "Iatriko Athinon",
+        1.79
+      ],
+      [
+        "MEDIC",
+        "Medicon Hellas",
+        2.65
+      ],
+      [
+        "BIOK",
+        "Bioiatriki",
+        null
+      ]
+    ],
+    "consumer": [
+      [
+        "OPAP",
+        "OPAP",
+        null
+      ],
+      [
+        "JUMBO",
+        "Jumbo",
+        null
+      ],
+      [
+        "SAR",
+        "Sarantis",
+        15.16
+      ]
+    ],
+    "energy": [
+      [
+        "PPC",
+        "Public Power Corp",
+        21.56
+      ],
+      [
+        "ELPE",
+        "HelleniQ Energy",
+        10.3
+      ],
+      [
+        "MOH",
+        "Motor Oil Hellas",
+        36.98
+      ]
+    ],
+    "materials": [
+      [
+        "TITC",
+        "Titan Cement",
+        51
+      ],
+      [
+        "VIO",
+        "Viohalco",
+        20.85
+      ],
+      [
+        "ELHA",
+        "Elvalhalcor",
+        5.05
+      ]
+    ],
+    "realestate": [
+      [
+        "LAMDA",
+        "Lamda Development",
+        6.17
+      ],
+      [
+        "TRASTOR",
+        "Trastor REIC",
+        0.97
+      ],
+      [
+        "PREMIA",
+        "Premia Properties",
+        1.41
+      ]
+    ]
+  },
+  "arg": {
+    "tech": [
+      [
+        "GLOB",
+        "Globant",
+        3328
+      ],
+      [
+        "MELI",
+        "MercadoLibre",
+        20930
+      ],
+      [
+        "BYMA",
+        "BYMA",
+        297
+      ]
+    ],
+    "finance": [
+      [
+        "GGAL",
+        "Grupo Fin. Galicia",
+        7495
+      ],
+      [
+        "BMA",
+        "Banco Macro",
+        13490
+      ],
+      [
+        "SUPV",
+        "Grupo Supervielle",
+        2880
+      ]
+    ],
+    "industrial": [
+      [
+        "MIRG",
+        "Mirgor",
+        16950
+      ],
+      [
+        "CAPX",
+        "Capex",
+        4655
+      ],
+      [
+        "FERR",
+        "Ferrum",
+        22
+      ]
+    ],
+    "health": [
+      [
+        "RICH",
+        "Lab. Richmond",
+        1640
+      ],
+      [
+        "INSU",
+        "Insuagro",
+        null
+      ],
+      [
+        "BIOC",
+        "Bioceres",
+        null
+      ]
+    ],
+    "consumer": [
+      [
+        "CRES",
+        "Cresud",
+        1770
+      ],
+      [
+        "MORI",
+        "Molinos Río",
+        30.6
+      ],
+      [
+        "LEDE",
+        "Ledesma",
+        747
+      ]
+    ],
+    "energy": [
+      [
+        "YPFD",
+        "YPF",
+        78350
+      ],
+      [
+        "PAMP",
+        "Pampa Energía",
+        5080
+      ],
+      [
+        "CEPU",
+        "Central Puerto",
+        2356
+      ]
+    ],
+    "materials": [
+      [
+        "TXAR",
+        "Ternium Argentina",
+        692.5
+      ],
+      [
+        "ALUA",
+        "Aluar",
+        1019
+      ],
+      [
+        "HARG",
+        "Holcim Argentina",
+        1770
+      ]
+    ],
+    "realestate": [
+      [
+        "IRSA",
+        "IRSA Inversiones",
+        2295
+      ],
+      [
+        "IRCP",
+        "IRSA Prop. Comerciales",
+        128.9
+      ],
+      [
+        "SAMI",
+        "San Miguel",
+        517
+      ]
+    ]
+  }
+}
